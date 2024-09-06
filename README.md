@@ -14,6 +14,9 @@ Set up project:
 [x] Create Git repository (automatic with Expo)
 
 Graphical Representation of Workflows
+[x] Testing libraries for shape representations
+[x] Create basic shapes as components
+
 Workflow Data Structure
 Workflow Algorithms
 Session Management
