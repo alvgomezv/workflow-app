@@ -2,9 +2,9 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
-export default function CircleComponent({ fillColor }) {
+export default function CircleComponent({ fillColor, onLayout }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayout}>
       <Svg height="200" width="200" viewBox="0 0 100 100">
         <Circle
           cx="50"

@@ -9,7 +9,8 @@ import {
   PanGestureHandler,
   State,
 } from "react-native-gesture-handler";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ConnectingLine from "./components/ConnectingLine";
 
 export default function App() {
   const translateX = useRef(new Animated.Value(0)).current;
@@ -52,6 +53,36 @@ export default function App() {
     }
   }; */
 
+  const [positions, setPositions] = useState({});
+  const [line, setLine] = useState({ x1: 50, y1: 50, x2: 90, y2: 90 });
+
+  const handleLayout = (event, id) => {
+    const { x, y, width, height } = event.nativeEvent.layout;
+    setPositions((prevPositions) => ({
+      ...prevPositions,
+      [id]: { x, y, width, height },
+    }));
+  };
+
+  useEffect(() => {
+    console.log(positions);
+  }, [positions]);
+
+  useEffect(() => {
+    if (positions.circleGreen) {
+      const { x, y, width, height } = positions.circleGreen;
+      const x1 = x + width / 2;
+      const y1 = y + height / 2;
+      setLine((prevLine) => ({ ...prevLine, x1, y1 }));
+    }
+    if (positions.circleRed) {
+      const { x, y, width, height } = positions.circleRed;
+      const x2 = x + width / 2;
+      const y2 = y + height / 2;
+      setLine((prevLine) => ({ ...prevLine, x2, y2 }));
+    }
+  }, [positions]);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PanGestureHandler
@@ -65,11 +96,20 @@ export default function App() {
               transform: [{ translateX }, { translateY }],
             },
           ]}
+          //onLayout={(event) => handleLayout(event, "container")}
         >
-          <CircleComponent fillColor="green" />
-          <SquareComponent fillColor="yellow" />
-          <DiamondComponent fillColor="blue" />
-          <CircleComponent fillColor="red" />
+          <ConnectingLine line={line} />
+
+          <CircleComponent
+            fillColor="green"
+            onLayout={(event) => handleLayout(event, "circleGreen")}
+          />
+
+          <CircleComponent
+            fillColor="red"
+            onLayout={(event) => handleLayout(event, "circleRed")}
+          />
+
           <StatusBar style="auto" />
         </Animated.View>
       </PanGestureHandler>
@@ -80,7 +120,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "grey",
     alignItems: "center",
     justifyContent: "center",
   },
