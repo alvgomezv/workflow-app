@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Animated } from "react-native";
+import { StyleSheet, View, Animated, Platform } from "react-native";
 import CircleComponent from "./components/CircleComponent";
 import SquareComponent from "./components/SquareComponent";
 import DiamondComponent from "./components/DiamondComponent";
@@ -8,9 +8,23 @@ import {
   GestureHandlerRootView,
   PanGestureHandler,
   State,
+  TouchableWithoutFeedback,
+  Gesture,
+  GestureDetector,
 } from "react-native-gesture-handler";
 import React, { useEffect, useRef, useState } from "react";
 import ConnectingLine from "./components/ConnectingLine";
+import {
+  Canvas,
+  Path,
+  Circle,
+  Rect,
+  Text,
+  listFontFamilies,
+  matchFont,
+} from "@shopify/react-native-skia";
+import { Use } from "react-native-svg";
+import { useSharedValue } from "react-native-reanimated";
 
 export default function App() {
   const translateX = useRef(new Animated.Value(0)).current;
@@ -53,35 +67,30 @@ export default function App() {
     }
   }; */
 
-  const [positions, setPositions] = useState({});
-  const [line, setLine] = useState({ x1: 50, y1: 50, x2: 90, y2: 90 });
-
-  const handleLayout = (event, id) => {
-    const { x, y, width, height } = event.nativeEvent.layout;
-    setPositions((prevPositions) => ({
-      ...prevPositions,
-      [id]: { x, y, width, height },
-    }));
+  //All this to display the text, because a font is needed
+  const fontFamily = Platform.select({ ios: "Helvetica", default: "serif" });
+  const fontStyle = {
+    fontFamily,
+    fontSize: 14,
+    fontStyle: "italic",
+    fontWeight: "bold",
   };
+  const font = matchFont(fontStyle);
 
-  useEffect(() => {
-    console.log(positions);
-  }, [positions]);
+  const translationX = useSharedValue(200); // Circle's X position
+  const translaionY = useSharedValue(250); // Circle's Y position
+  const greenCircleRadius = 60;
 
-  useEffect(() => {
-    if (positions.circleGreen) {
-      const { x, y, width, height } = positions.circleGreen;
-      const x1 = x + width / 2;
-      const y1 = y + height / 2;
-      setLine((prevLine) => ({ ...prevLine, x1, y1 }));
-    }
-    if (positions.circleRed) {
-      const { x, y, width, height } = positions.circleRed;
-      const x2 = x + width / 2;
-      const y2 = y + height / 2;
-      setLine((prevLine) => ({ ...prevLine, x2, y2 }));
-    }
-  }, [positions]);
+  // Gesture handler for detecting tap on the green circle
+  const gesture = Gesture.Tap().onEnd((event) => {
+    if (
+      Math.sqrt(
+        Math.pow(event.x - translationX.value, 2) +
+          Math.pow(event.y - translaionY.value, 2)
+      ) <= greenCircleRadius
+    )
+      console.log("Green circle touched!");
+  });
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -96,19 +105,28 @@ export default function App() {
               transform: [{ translateX }, { translateY }],
             },
           ]}
-          //onLayout={(event) => handleLayout(event, "container")}
         >
-          <ConnectingLine line={line} />
+          <GestureDetector gesture={gesture}>
+            <Canvas style={{ flex: 1 }}>
+              <Circle
+                cx={translationX.value}
+                cy={translaionY.value}
+                r={greenCircleRadius}
+                color="green"
+              />
 
-          <CircleComponent
-            fillColor="green"
-            onLayout={(event) => handleLayout(event, "circleGreen")}
-          />
+              <Circle cx={200} cy={500} r={60} color="red" />
 
-          <CircleComponent
-            fillColor="red"
-            onLayout={(event) => handleLayout(event, "circleRed")}
-          />
+              <Text text="Hello World" y={250} x={160} font={null} />
+
+              <Path
+                path="M 200 310 L 200 440"
+                color="black"
+                style="stroke"
+                strokeWidth={3}
+              />
+            </Canvas>
+          </GestureDetector>
 
           <StatusBar style="auto" />
         </Animated.View>
@@ -120,8 +138,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "grey",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#fff",
   },
 });

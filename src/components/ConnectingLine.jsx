@@ -1,6 +1,7 @@
 import React from "react";
 import Svg, { Line } from "react-native-svg";
 import { StyleSheet } from "react-native";
+import { View } from "react-native";
 
 const ConnectingLine = ({ line }) => {
   return (
