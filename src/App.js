@@ -63,8 +63,31 @@ export default function App() {
     y2: 440,
   };
 
+  const [circles, setCircles] = useState([
+    { id: 1, color: "green", cx: 200, cy: 250 },
+    { id: 2, color: "red", cx: 200, cy: 350 },
+  ]);
+
+  const handleLineTouch = () => {
+    setCircles((prevCircles) => {
+      const distance = 100;
+      const lastCircle = prevCircles[prevCircles.length - 1];
+      const newId = lastCircle.id + 1;
+      const newCy = lastCircle.cy + distance;
+
+      return [...prevCircles, { id: newId, color: "blue", cx: 200, cy: newCy }];
+    });
+  };
+
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(line, circle);
+  const tapGesture = useTapHandler(line, circle, handleLineTouch);
+
+  useEffect(() => {
+    circles.forEach((circle) => {
+      console.log(circle);
+    });
+    console.log("----");
+  }, [circles]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

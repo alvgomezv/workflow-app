@@ -1,6 +1,6 @@
 import { Gesture } from "react-native-gesture-handler";
 
-export const useTapHandler = (line, circle, threshold = 10) => {
+export const useTapHandler = (line, circle, onLineTouch, threshold = 10) => {
   const distanceToLine = (x, y, x1, y1, x2, y2) => {
     const A = x - x1;
     const B = y - y1;
@@ -39,6 +39,7 @@ export const useTapHandler = (line, circle, threshold = 10) => {
         console.log("Circle touched!");
       } else if (distanceToLine(x, y, x1, y1, x2, y2) <= threshold) {
         console.log("Line touched!");
+        onLineTouch();
       }
     })
     .runOnJS(true);
