@@ -1,11 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import CircleComponent from './components/CircleComponent';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import CircleComponent from "./components/CircleComponent";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <CircleComponent />
+      <CircleComponent fillColor="green" />
+      <CircleComponent fillColor="red" />
       <StatusBar style="auto" />
     </View>
   );
@@ -14,8 +15,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
