@@ -20,9 +20,9 @@ Graphical Representation of Workflows
 
 Workflow Data Structure
 [x] Try out different Data Structures
-[_] Choose one Data Structure for workflow and nodes
-[_] Create workflow object
-[_] Create node objects
+[x] Choose one Data Structure for workflow and nodes
+[x] Create workflow object
+[x] Create node objects
 [_] Function to create new nodes
 [_] Determine initial workflow structure
 

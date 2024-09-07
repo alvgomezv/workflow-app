@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Animated, Platform } from "react-native";
+import { StyleSheet, View, Text as Tx, Animated, Platform } from "react-native";
 import { usePanHandler } from "./usePanHandler";
 import CircleComponent from "./components/CircleComponent";
 import SquareComponent from "./components/SquareComponent";
@@ -27,6 +27,7 @@ import {
 import { Use } from "react-native-svg";
 import { useSharedValue } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
+import { WorkflowGraph } from "./WorkflowGraph";
 
 export default function App() {
   /* //Pan Gesture Handler for moving the canvas
@@ -89,6 +90,56 @@ export default function App() {
     console.log("----");
   }, [circles]); */
 
+  const [workflow, setWorkflow] = useState(new WorkflowGraph());
+
+  useEffect(() => {
+    // Initialize the workflow graph
+    const initialWorkflow = new WorkflowGraph();
+
+    // Add nodes
+    initialWorkflow.addNode("InitNode", "Init", "InitNode");
+    /* initialWorkflow.addConditionalNode("Condition1", "Condition1", {
+      Yes: "EndNode",
+      No: "Action2",
+    }); */
+    initialWorkflow.addNode("Action1", "Action", "Action1");
+    initialWorkflow.addNode("EndNode", "End", "EndNode");
+
+    // Add edges for non-conditional nodes
+    initialWorkflow.addEdge("InitNode", "Action1"); // Init -> Action1
+    initialWorkflow.addEdge("Action1", "EndNode"); // Action2 -> End
+
+    // Set the initial workflow state
+    setWorkflow(initialWorkflow);
+  }, []);
+
+  // Function to update the workflow graph
+  const updateWorkflow = (updateFn) => {
+    setWorkflow((prevWorkflow) => {
+      const newWorkflow = new WorkflowGraph();
+      Object.assign(newWorkflow, prevWorkflow);
+      updateFn(newWorkflow);
+      return newWorkflow;
+    });
+  };
+
+  // Example of updating the workflow graph
+  const addNodeAndEdge = () => {
+    updateWorkflow((wf) => {
+      const nodeAdded = wf.addNode("Action2", "Action", "Action2");
+      if (nodeAdded) {
+        wf.deleteEdge("Action1", "EndNode");
+        wf.addEdge("Action1", "Action2");
+        wf.addEdge("Action2", "EndNode");
+      }
+    });
+  };
+
+  // Print graph whenever it changes
+  useEffect(() => {
+    workflow.printGraph();
+  }, [workflow]);
+
   return (
     /*  <GestureHandlerRootView style={{ flex: 1 }}>
       <PanGestureHandler
@@ -129,7 +180,9 @@ export default function App() {
         </Animated.View>
       </PanGestureHandler>
     </GestureHandlerRootView> */
-    <View style={styles.container}></View>
+    <View style={styles.container}>
+      <Tx onPress={addNodeAndEdge}>Click</Tx>
+    </View>
   );
 }
 
@@ -137,5 +190,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
