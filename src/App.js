@@ -29,6 +29,29 @@ import { useSharedValue } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
 import { WorkflowGraph } from "./WorkflowGraph";
 import NodeForm from "./components/NodeForm";
+import calculateCoordinates from "./calculateCoordinates";
+import WorkflowCanvas from "./components/WorkflowCanvas";
+
+const initializeWorkflow = () => {
+  // Initialize the workflow graph
+  const initialWorkflow = new WorkflowGraph();
+
+  // Add nodes
+  initialWorkflow.addNode("I", "Init", "InitNode");
+  initialWorkflow.addNode("C1a", "Condition", "Condition1");
+  initialWorkflow.addNode("C1b", "Condition", "Condition2");
+  initialWorkflow.addNode("A1", "Action", "Action1");
+  initialWorkflow.addNode("E", "End", "EndNode");
+
+  // Add edges
+  initialWorkflow.addEdge("I", "C1a");
+  initialWorkflow.addEdge("I", "C1b");
+  initialWorkflow.addEdge("C1a", "E");
+  initialWorkflow.addEdge("C1b", "A1");
+  initialWorkflow.addEdge("A1", "E");
+
+  return initialWorkflow;
+};
 
 export default function App() {
   /* //Pan Gesture Handler for moving the canvas
@@ -91,29 +114,7 @@ export default function App() {
     console.log("----");
   }, [circles]); */
 
-  const [workflow, setWorkflow] = useState(new WorkflowGraph());
-
-  useEffect(() => {
-    // Initialize the workflow graph
-    const initialWorkflow = new WorkflowGraph();
-
-    // Add nodes
-    initialWorkflow.addNode("I", "Init", "InitNode");
-    initialWorkflow.addNode("C1a", "Condition", "Condition1");
-    initialWorkflow.addNode("C1b", "Condition", "Condition2");
-    initialWorkflow.addNode("A1", "Action", "Action1");
-    initialWorkflow.addNode("E", "End", "EndNode");
-
-    // Add edges
-    initialWorkflow.addEdge("I", "C1a");
-    initialWorkflow.addEdge("I", "C1b");
-    initialWorkflow.addEdge("C1a", "E");
-    initialWorkflow.addEdge("C1b", "A1");
-    initialWorkflow.addEdge("A1", "E");
-
-    // Set the initial workflow state
-    setWorkflow(initialWorkflow);
-  }, []);
+  const [workflow, setWorkflow] = useState(initializeWorkflow);
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -141,7 +142,6 @@ export default function App() {
       const nodeAdded = wf.addNode(newId, "Action", name);
       if (nodeAdded) {
         if (wf.adjacencyList[toNode].type === "Condition") {
-          console.log("toNode is a condition node");
           // If toNode is a condition, delete the 2 edges from fromNode to toNode
           const fromNodeNeighbor1 = wf.adjacencyList[fromNode].neighbors[0];
           const fromNodeNeighbor2 = wf.adjacencyList[fromNode].neighbors[1];
@@ -237,7 +237,8 @@ export default function App() {
     <View style={styles.container}>
       {/*  <Text onPress={addAction}>Action</Text>
       <Text onPress={addCondition}>Condition</Text> */}
-      <NodeForm addAction={addAction} addCondition={addCondition} />
+      {/* <NodeForm addAction={addAction} addCondition={addCondition} /> */}
+      <WorkflowCanvas workflow={workflow} />
     </View>
   );
 }
@@ -247,8 +248,8 @@ const styles = StyleSheet.create({
     flex: 1,
 
     //delete for drawing on canvas
-    backgroundColor: "white",
+    /*  backgroundColor: "white",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center", */
   },
 });

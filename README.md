@@ -16,8 +16,8 @@ Set up project:
 Graphical Representation of Workflows
 [x] Testing libraries for shape representations
 [x] Choose library for shape representation
-[_] Create basic shapes as components
-[_] Paint basic shapes from data structure
+[x] Create basic shapes as components
+[x] Paint basic shapes from data structure
 
 Workflow Data Structure
 [x] Try out different Data Structures
