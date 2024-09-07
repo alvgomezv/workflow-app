@@ -1,10 +1,10 @@
 const calculateCoordinates = (workflow) => {
   const levels = {};
   const coordinates = {};
-  const nodeWidth = 60;
-  const nodeHeight = 60;
-  const verticalSpacing = 100;
-  const horizontalSpacing = 100;
+  const nodeWidth = 120;
+  const nodeHeight = 120;
+  const verticalSpacing = 50;
+  const horizontalSpacing = 50;
 
   const calculateLevel = (nodeId, level) => {
     if (!levels[level]) {

@@ -115,6 +115,7 @@ export default function App() {
   }, [circles]); */
 
   const [workflow, setWorkflow] = useState(initializeWorkflow);
+  const [showNodeForm, setShowNodeForm] = useState(false);
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -162,6 +163,7 @@ export default function App() {
         }
       }
     });
+    setShowNodeForm(false);
   };
 
   const addCondition = (fromNode, toNode, condition1, condition2) => {
@@ -187,12 +189,17 @@ export default function App() {
         }
       }
     });
+    setShowNodeForm(false);
   };
 
   // Print graph whenever it changes
   useEffect(() => {
     workflow.printGraph();
   }, [workflow]);
+
+  const handleAddNodePress = () => {
+    setShowNodeForm(true);
+  };
 
   return (
     /*  <GestureHandlerRootView style={{ flex: 1 }}>
@@ -235,10 +242,18 @@ export default function App() {
       </PanGestureHandler>
     </GestureHandlerRootView> */
     <View style={styles.container}>
-      {/*  <Text onPress={addAction}>Action</Text>
-      <Text onPress={addCondition}>Condition</Text> */}
-      {/* <NodeForm addAction={addAction} addCondition={addCondition} /> */}
-      <WorkflowCanvas workflow={workflow} />
+      {showNodeForm ? (
+        <NodeForm addAction={addAction} addCondition={addCondition} />
+      ) : (
+        <>
+          <WorkflowCanvas workflow={workflow} />
+          <View style={styles.bottomContainer}>
+            <Text style={styles.addNode} onPress={handleAddNodePress}>
+              Add Node
+            </Text>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -251,5 +266,17 @@ const styles = StyleSheet.create({
     /*  backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center", */
+  },
+  bottomContainer: {
+    position: "absolute",
+    bottom: 20, // Adjust the bottom margin as needed
+    left: 0,
+    right: 0,
+    alignItems: "center", // Center the content horizontally
+  },
+  addNode: {
+    margin: 10, // Adjust the margin as needed
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
