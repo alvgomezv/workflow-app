@@ -217,26 +217,8 @@ export default function App() {
         >
           <GestureDetector gesture={tapGesture}>
             <Canvas style={{ flex: 1 }}>
-              <Circle
-                cx={translationX.value}
-                cy={translationY.value}
-                r={greenCircleRadius}
-                color="green"
-              />
-
-              <Circle cx={200} cy={500} r={60} color="red" />
-
-              <Tx text="Hello World" y={250} x={160} font={null} />
-
-              <Path
-                path="M 200 310 L 200 440"
-                color="black"
-                style="stroke"
-                strokeWidth={3}
-              />
             </Canvas>
           </GestureDetector>
-
           <StatusBar style="auto" />
         </Animated.View>
       </PanGestureHandler>

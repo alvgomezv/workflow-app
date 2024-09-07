@@ -7,6 +7,7 @@ import {
   Text as Tx,
   listFontFamilies,
   matchFont,
+  Paint,
 } from "@shopify/react-native-skia";
 import calculateCoordinates from "./../calculateCoordinates";
 
@@ -23,20 +24,21 @@ const WorkflowCanvas = ({ workflow }) => {
           case "Init":
             return (
               <React.Fragment key={nodeId}>
-                <Circle cx={x} cy={y} r={30} color="green" />
+                <Circle cx={x} cy={y} r={50} color="green">
+                  <Paint color="#black" style="stroke" strokeWidth={2} />
+                </Circle>
                 <Tx text="I" y={y + 5} x={x - 5} font={null} />
               </React.Fragment>
             );
           case "Condition":
             return (
               <React.Fragment key={nodeId}>
-                <Rect
-                  x={x - 30}
-                  y={y - 30}
-                  width={60}
-                  height={60}
+                <Path
+                  path={`M ${x} ${y - 50} L ${x + 70} ${y} L ${x} ${y + 50} L ${x - 70} ${y} Z`}
                   color="blue"
-                />
+                >
+                  <Paint color="#black" style="stroke" strokeWidth={2} />
+                </Path>
                 <Tx text={node.name} y={y} x={x - 20} font={null} />
               </React.Fragment>
             );
@@ -44,19 +46,23 @@ const WorkflowCanvas = ({ workflow }) => {
             return (
               <React.Fragment key={nodeId}>
                 <Rect
-                  x={x - 30}
-                  y={y - 30}
-                  width={60}
-                  height={60}
+                  x={x - 40}
+                  y={y - 40}
+                  width={80}
+                  height={80}
                   color="yellow"
-                />
+                >
+                  <Paint color="#black" style="stroke" strokeWidth={2} />
+                </Rect>
                 <Tx text={node.name} y={y} x={x - 20} font={null} />
               </React.Fragment>
             );
           case "End":
             return (
               <React.Fragment key={nodeId}>
-                <Circle cx={x} cy={y} r={30} color="red" />
+                <Circle cx={x} cy={y} r={50} color="red">
+                  <Paint color="#black" style="stroke" strokeWidth={2} />
+                </Circle>
                 <Tx text="E" y={y + 5} x={x - 5} font={null} />
               </React.Fragment>
             );
