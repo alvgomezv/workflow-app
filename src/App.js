@@ -99,16 +99,17 @@ export default function App() {
 
     // Add nodes
     initialWorkflow.addNode("I", "Init", "InitNode");
-    initialWorkflow.addConditionalNode("C1", {
-      Yes: "E",
-      No: "A1",
-    });
+    initialWorkflow.addNode("C1a", "Condition", "Condition1");
+    initialWorkflow.addNode("C1b", "Condition", "Condition2");
     initialWorkflow.addNode("A1", "Action", "Action1");
     initialWorkflow.addNode("E", "End", "EndNode");
 
-    // Add edges for non-conditional nodes
-    initialWorkflow.addEdge("I", "C1"); // Init -> Action1
-    initialWorkflow.addEdge("A1", "E"); // Action1 -> End
+    // Add edges
+    initialWorkflow.addEdge("I", "C1a");
+    initialWorkflow.addEdge("I", "C1b");
+    initialWorkflow.addEdge("C1a", "E");
+    initialWorkflow.addEdge("C1b", "A1");
+    initialWorkflow.addEdge("A1", "E");
 
     // Set the initial workflow state
     setWorkflow(initialWorkflow);
@@ -135,36 +136,55 @@ export default function App() {
   };
 
   const addAction = (name, fromNode, toNode) => {
-    const id = getNextId("A");
+    const newId = getNextId("A");
     updateWorkflow((wf) => {
-      const nodeAdded = wf.addNode(id, "Action", name);
+      const nodeAdded = wf.addNode(newId, "Action", name);
       if (nodeAdded) {
-        wf.deleteEdge(fromNode, toNode);
-        wf.addEdge(fromNode, id);
-        wf.addEdge(id, toNode);
+        if (wf.adjacencyList[toNode].type === "Condition") {
+          console.log("toNode is a condition node");
+          // If toNode is a condition, delete the 2 edges from fromNode to toNode
+          const fromNodeNeighbor1 = wf.adjacencyList[fromNode].neighbors[0];
+          const fromNodeNeighbor2 = wf.adjacencyList[fromNode].neighbors[1];
+          wf.deleteEdge(fromNode, fromNodeNeighbor2);
+          wf.deleteEdge(fromNode, fromNodeNeighbor1);
+
+          // Add 2 edges from newId to each of the conditional nodes
+          wf.addEdge(newId, fromNodeNeighbor1);
+          wf.addEdge(newId, fromNodeNeighbor2);
+
+          // Add 1 edge from fromNode to newId
+          wf.addEdge(fromNode, newId);
+        } else {
+          // If toNode is not a condition, handle as usual
+          wf.deleteEdge(fromNode, toNode);
+          wf.addEdge(fromNode, newId);
+          wf.addEdge(newId, toNode);
+        }
       }
     });
   };
 
-  const addCondition = (
-    fromNode,
-    toNode,
-    condition1,
-    //condition1ToNode,
-    condition2
-    //condition2ToNode
-  ) => {
-    const id = getNextId("C");
+  const addCondition = (fromNode, toNode, condition1, condition2) => {
+    const newId = getNextId("C");
     updateWorkflow((wf) => {
-      const nodeAdded = wf.addConditionalNode(id, {
-        //[condition1]: condition1ToNode,
-        //[condition2]: condition2ToNode,
-        [condition1]: toNode,
-        [condition2]: toNode,
-      });
-      if (nodeAdded) {
-        wf.deleteEdge(fromNode, toNode);
-        wf.addEdge(fromNode, id);
+      if (wf.adjacencyList[toNode].type === "Condition") {
+        console.error(
+          "Cannot create a condition node before another condition node"
+        );
+      } else {
+        const FirstNodeAdded = wf.addNode(newId + "a", "Condition", condition1);
+        const SecondNodeAdded = wf.addNode(
+          newId + "b",
+          "Condition",
+          condition2
+        );
+        if (FirstNodeAdded && SecondNodeAdded) {
+          wf.deleteEdge(fromNode, toNode);
+          wf.addEdge(fromNode, newId + "a");
+          wf.addEdge(fromNode, newId + "b");
+          wf.addEdge(newId + "a", toNode);
+          wf.addEdge(newId + "b", toNode);
+        }
       }
     });
   };

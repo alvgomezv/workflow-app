@@ -44,10 +44,10 @@ const NodeForm = ({ addAction, addCondition }) => {
       );
     }
     //clean the form
-    setNodeType("Action");
+    /* setNodeType("Action");
     setNodeName("");
     setFromNode("");
-    setToNode("");
+    setToNode(""); */
   };
 
   return (

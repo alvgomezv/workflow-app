@@ -1,16 +1,16 @@
-class Condition {
+/* class Condition {
   constructor(condition, neighborId) {
     this.condition = condition;
     this.neighborId = neighborId;
   }
-}
+} */
 
 class WorkflowGraph {
   constructor() {
     this.adjacencyList = {};
   }
 
-  // Add a general node (Init, Action, End)
+  // Add a general node (Init, Action, Condition, End)
   addNode(id, type, name) {
     if (this.adjacencyList[id]) {
       console.error(`Node with ID ${id} already exists.`);
@@ -27,7 +27,7 @@ class WorkflowGraph {
   }
 
   // Add a conditional node
-  addConditionalNode(id, conditions) {
+  /* addConditionalNode(id, conditions) {
     if (this.adjacencyList[id]) {
       console.error(`Node with ID ${id} already exists.`);
       return false; // Return false if the node already exists
@@ -49,7 +49,7 @@ class WorkflowGraph {
       conditions: conditionsMap,
     };
     return true; // Return true if the node was successfully added
-  }
+  } */
 
   // Add an edge from one node to another (for other types of nodes)
   addEdge(fromId, toId) {
@@ -86,15 +86,11 @@ class WorkflowGraph {
       if (node.type === "End") {
         endNode = node;
       } else {
-        console.log(
-          `${node.id} (${node.type}) -> [${node.neighbors.join(", ")}]`
-        );
+        console.log(`${node.id} (${node.type}) -> [${node.neighbors}]`);
       }
     }
     if (endNode) {
-      console.log(
-        `${endNode.id} (${endNode.type}) -> [${endNode.neighbors.join(", ")}]`
-      );
+      console.log(`${endNode.id} (${endNode.type}) -> [${endNode.neighbors}]`);
     }
     console.log("----");
   }

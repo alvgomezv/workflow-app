@@ -27,7 +27,9 @@ Workflow Data Structure
 [x] Simple nodes (Init, End, Action) and conditional nodes
 [x] Function to create new nodes, simple and conditional, with input
 [x] Determine initial workflow structure
-[_] Funcion to create new nodes at any point of the workflow
+-tried with single node for conditionas, having problems
+[x] Double node for conditional
+[x] Funcion to create new nodes at any point of the workflow
 
 Workflow Algorithms
 [_] Determine algorithm to go throw the workflow
