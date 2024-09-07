@@ -27,7 +27,7 @@ class WorkflowGraph {
   }
 
   // Add a conditional node
-  addConditionalNode(id, name, conditions) {
+  addConditionalNode(id, conditions) {
     if (this.adjacencyList[id]) {
       console.error(`Node with ID ${id} already exists.`);
       return false; // Return false if the node already exists
@@ -45,7 +45,6 @@ class WorkflowGraph {
     this.adjacencyList[id] = {
       id,
       type: "Conditional",
-      name,
       neighbors: Object.values(conditionsMap),
       conditions: conditionsMap,
     };
@@ -58,9 +57,7 @@ class WorkflowGraph {
     const toNode = this.adjacencyList[toId];
 
     if (!fromNode || !toNode) {
-      console.error(
-        `Failed to add Edge: One or both of the nodes do not exist.`
-      );
+      console.error(`Failed to add Edge: FromId: ${fromId}, toId ${toId}`);
       return false; // Return false if one or both nodes do not exist
     }
 
@@ -72,9 +69,7 @@ class WorkflowGraph {
     const fromNode = this.adjacencyList[fromId];
 
     if (!fromNode) {
-      console.error(
-        `Failed to delete Edge: Node with ID ${fromId} does not exist.`
-      );
+      console.error(`Failed to delete Edge: FromId: ${fromId}, toId ${toId}`);
       return false;
     }
 
@@ -92,13 +87,13 @@ class WorkflowGraph {
         endNode = node;
       } else {
         console.log(
-          `${node.name} (${node.type}) -> [${node.neighbors.join(", ")}]`
+          `${node.id} (${node.type}) -> [${node.neighbors.join(", ")}]`
         );
       }
     }
     if (endNode) {
       console.log(
-        `${endNode.name} (${endNode.type}) -> [${endNode.neighbors.join(", ")}]`
+        `${endNode.id} (${endNode.type}) -> [${endNode.neighbors.join(", ")}]`
       );
     }
     console.log("----");

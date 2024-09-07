@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text as Tx, Animated, Platform } from "react-native";
+import { StyleSheet, View, Text, Animated, Platform } from "react-native";
 import { usePanHandler } from "./usePanHandler";
 import CircleComponent from "./components/CircleComponent";
 import SquareComponent from "./components/SquareComponent";
@@ -20,7 +20,7 @@ import {
   Path,
   Circle,
   Rect,
-  Text,
+  Text as Tx,
   listFontFamilies,
   matchFont,
 } from "@shopify/react-native-skia";
@@ -28,6 +28,7 @@ import { Use } from "react-native-svg";
 import { useSharedValue } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
 import { WorkflowGraph } from "./WorkflowGraph";
+import NodeForm from "./components/NodeForm";
 
 export default function App() {
   /* //Pan Gesture Handler for moving the canvas
@@ -97,17 +98,17 @@ export default function App() {
     const initialWorkflow = new WorkflowGraph();
 
     // Add nodes
-    initialWorkflow.addNode("InitNode", "Init", "InitNode");
-    initialWorkflow.addConditionalNode("Condition1", "Condition1", {
-      Yes: "EndNode",
-      No: "Action1",
+    initialWorkflow.addNode("I", "Init", "InitNode");
+    initialWorkflow.addConditionalNode("C1", {
+      Yes: "E",
+      No: "A1",
     });
-    initialWorkflow.addNode("Action1", "Action", "Action1");
-    initialWorkflow.addNode("EndNode", "End", "EndNode");
+    initialWorkflow.addNode("A1", "Action", "Action1");
+    initialWorkflow.addNode("E", "End", "EndNode");
 
     // Add edges for non-conditional nodes
-    initialWorkflow.addEdge("InitNode", "Condition1"); // Init -> Action1
-    initialWorkflow.addEdge("Action1", "EndNode"); // Action1 -> End
+    initialWorkflow.addEdge("I", "C1"); // Init -> Action1
+    initialWorkflow.addEdge("A1", "E"); // Action1 -> End
 
     // Set the initial workflow state
     setWorkflow(initialWorkflow);
@@ -123,26 +124,47 @@ export default function App() {
     });
   };
 
-  const addAction = () => {
+  const getNextId = (prefix) => {
+    const ids = Object.keys(workflow.adjacencyList)
+      .filter((id) => id.startsWith(prefix))
+      .map((id) => parseInt(id.slice(1), 10))
+      .sort((a, b) => a - b);
+
+    const nextNumber = ids.length > 0 ? ids[ids.length - 1] + 1 : 1;
+    return `${prefix}${nextNumber}`;
+  };
+
+  const addAction = (name, fromNode, toNode) => {
+    const id = getNextId("A");
     updateWorkflow((wf) => {
-      const nodeAdded = wf.addNode("Action2", "Action", "Action2");
+      const nodeAdded = wf.addNode(id, "Action", name);
       if (nodeAdded) {
-        wf.deleteEdge("Action1", "EndNode");
-        wf.addEdge("Action1", "Action2");
-        wf.addEdge("Action2", "EndNode");
+        wf.deleteEdge(fromNode, toNode);
+        wf.addEdge(fromNode, id);
+        wf.addEdge(id, toNode);
       }
     });
   };
 
-  const addCondition = () => {
+  const addCondition = (
+    fromNode,
+    toNode,
+    condition1,
+    //condition1ToNode,
+    condition2
+    //condition2ToNode
+  ) => {
+    const id = getNextId("C");
     updateWorkflow((wf) => {
-      const nodeAdded = wf.addConditionalNode("Condition2", "Condition2", {
-        Yes: "EndNode",
-        No: "EndNode",
+      const nodeAdded = wf.addConditionalNode(id, {
+        //[condition1]: condition1ToNode,
+        //[condition2]: condition2ToNode,
+        [condition1]: toNode,
+        [condition2]: toNode,
       });
       if (nodeAdded) {
-        wf.deleteEdge("Action1", "EndNode");
-        wf.addEdge("Action1", "Condition2");
+        wf.deleteEdge(fromNode, toNode);
+        wf.addEdge(fromNode, id);
       }
     });
   };
@@ -177,7 +199,7 @@ export default function App() {
 
               <Circle cx={200} cy={500} r={60} color="red" />
 
-              <Text text="Hello World" y={250} x={160} font={null} />
+              <Tx text="Hello World" y={250} x={160} font={null} />
 
               <Path
                 path="M 200 310 L 200 440"
@@ -193,8 +215,9 @@ export default function App() {
       </PanGestureHandler>
     </GestureHandlerRootView> */
     <View style={styles.container}>
-      <Tx onPress={addAction}>Action</Tx>
-      <Tx onPress={addCondition}>Condition</Tx>
+      {/*  <Text onPress={addAction}>Action</Text>
+      <Text onPress={addCondition}>Condition</Text> */}
+      <NodeForm addAction={addAction} addCondition={addCondition} />
     </View>
   );
 }
@@ -202,10 +225,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "grey",
+
+    //delete for drawing on canvas
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
-    gap: 20,
   },
 });
