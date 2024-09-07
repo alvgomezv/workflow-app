@@ -98,16 +98,16 @@ export default function App() {
 
     // Add nodes
     initialWorkflow.addNode("InitNode", "Init", "InitNode");
-    /* initialWorkflow.addConditionalNode("Condition1", "Condition1", {
+    initialWorkflow.addConditionalNode("Condition1", "Condition1", {
       Yes: "EndNode",
-      No: "Action2",
-    }); */
+      No: "Action1",
+    });
     initialWorkflow.addNode("Action1", "Action", "Action1");
     initialWorkflow.addNode("EndNode", "End", "EndNode");
 
     // Add edges for non-conditional nodes
-    initialWorkflow.addEdge("InitNode", "Action1"); // Init -> Action1
-    initialWorkflow.addEdge("Action1", "EndNode"); // Action2 -> End
+    initialWorkflow.addEdge("InitNode", "Condition1"); // Init -> Action1
+    initialWorkflow.addEdge("Action1", "EndNode"); // Action1 -> End
 
     // Set the initial workflow state
     setWorkflow(initialWorkflow);
@@ -123,14 +123,26 @@ export default function App() {
     });
   };
 
-  // Example of updating the workflow graph
-  const addNodeAndEdge = () => {
+  const addAction = () => {
     updateWorkflow((wf) => {
       const nodeAdded = wf.addNode("Action2", "Action", "Action2");
       if (nodeAdded) {
         wf.deleteEdge("Action1", "EndNode");
         wf.addEdge("Action1", "Action2");
         wf.addEdge("Action2", "EndNode");
+      }
+    });
+  };
+
+  const addCondition = () => {
+    updateWorkflow((wf) => {
+      const nodeAdded = wf.addConditionalNode("Condition2", "Condition2", {
+        Yes: "EndNode",
+        No: "EndNode",
+      });
+      if (nodeAdded) {
+        wf.deleteEdge("Action1", "EndNode");
+        wf.addEdge("Action1", "Condition2");
       }
     });
   };
@@ -181,7 +193,8 @@ export default function App() {
       </PanGestureHandler>
     </GestureHandlerRootView> */
     <View style={styles.container}>
-      <Tx onPress={addNodeAndEdge}>Click</Tx>
+      <Tx onPress={addAction}>Action</Tx>
+      <Tx onPress={addCondition}>Condition</Tx>
     </View>
   );
 }
@@ -192,5 +205,7 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
+    gap: 20,
   },
 });

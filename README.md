@@ -17,14 +17,17 @@ Graphical Representation of Workflows
 [x] Testing libraries for shape representations
 [x] Choose library for shape representation
 [_] Create basic shapes as components
+[_] Paint basic shapes from data structure
 
 Workflow Data Structure
 [x] Try out different Data Structures
 [x] Choose one Data Structure for workflow and nodes
 [x] Create workflow object
 [x] Create node objects
-[_] Function to create new nodes
-[_] Determine initial workflow structure
+[x] Simple nodes (Init, End, Action) and conditional nodes
+[x] Function to create new nodes, simple and conditional, with input
+[x] Determine initial workflow structure
+[_] Funcion to create new nodes at any point of the workflow
 
 Workflow Algorithms
 [_] Determine algorithm to go throw the workflow
