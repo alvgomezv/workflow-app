@@ -15,11 +15,25 @@ Set up project:
 
 Graphical Representation of Workflows
 [x] Testing libraries for shape representations
-[x] Create basic shapes as components
+[x] Choose library for shape representation
+[_] Create basic shapes as components
 
 Workflow Data Structure
+[x] Try out different Data Structures
+[_] Choose one Data Structure for workflow and nodes
+[_] Create workflow object
+[_] Create node objects
+[_] Function to create new nodes
+[_] Determine initial workflow structure
+
 Workflow Algorithms
-Session Management
+[_] Determine algorithm to go throw the workflow
+[_] Function to check if workflow is valid
+
 Basic Navigation
+[_] Workflow page
+[_] Navigation with tabs to create more Workflow pages
+
+Session Management
 Animations
 Automated Tests

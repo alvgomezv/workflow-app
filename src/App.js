@@ -29,7 +29,7 @@ import { useSharedValue } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
 
 export default function App() {
-  //Pan Gesture Handler for moving the canvas
+  /* //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
     usePanHandler();
 
@@ -87,10 +87,10 @@ export default function App() {
       console.log(circle);
     });
     console.log("----");
-  }, [circles]);
+  }, [circles]); */
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    /*  <GestureHandlerRootView style={{ flex: 1 }}>
       <PanGestureHandler
         onGestureEvent={handlePan}
         onHandlerStateChange={handlePanStateChange}
@@ -128,13 +128,14 @@ export default function App() {
           <StatusBar style="auto" />
         </Animated.View>
       </PanGestureHandler>
-    </GestureHandlerRootView>
+    </GestureHandlerRootView> */
+    <View style={styles.container}></View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "grey",
   },
 });
