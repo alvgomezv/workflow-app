@@ -12,6 +12,8 @@ const calculateCoordinates = (workflow) => {
   // Get the actual screen width
   const screenWidth = Dimensions.get("window").width;
 
+  const visited = new Set();
+
   const calculateLevel = (nodeId, level) => {
     if (!levels[level]) {
       levels[level] = [];
@@ -21,7 +23,6 @@ const calculateCoordinates = (workflow) => {
     }
 
     const node = workflow.adjacencyList[nodeId];
-    // Maybe not needed
     if (!node) {
       console.error(
         `Node with ID ${nodeId} does not exist in the adjacency list.`
@@ -30,12 +31,44 @@ const calculateCoordinates = (workflow) => {
     }
 
     node.neighbors.forEach((neighborId) => {
-      calculateLevel(neighborId, level + 1);
+      const neighborLevel = level + 1;
+      calculateLevel(neighborId, neighborLevel);
     });
   };
 
   // Start from the Init node
   calculateLevel("I", 0);
+  console.log(levels);
+
+  // Ensure each node is at the maximum level it can be based on its parents
+  const maxLevels = {};
+  Object.keys(levels).forEach((level) => {
+    levels[level].forEach((nodeId) => {
+      const node = workflow.adjacencyList[nodeId];
+      node.neighbors.forEach((neighborId) => {
+        const neighborLevel = parseInt(level) + 1;
+        if (!maxLevels[neighborId] || maxLevels[neighborId] < neighborLevel) {
+          maxLevels[neighborId] = neighborLevel;
+        }
+      });
+    });
+  });
+
+  Object.keys(maxLevels).forEach((nodeId) => {
+    const level = maxLevels[nodeId];
+    if (!levels[level]) {
+      levels[level] = [];
+    }
+    if (!levels[level].includes(nodeId)) {
+      levels[level].push(nodeId);
+    }
+    Object.keys(levels).forEach((lvl) => {
+      const index = levels[lvl].indexOf(nodeId);
+      if (index !== -1 && parseInt(lvl) !== level) {
+        levels[lvl].splice(index, 1);
+      }
+    });
+  });
 
   Object.keys(levels).forEach((level) => {
     const nodesInLevel = levels[level].length;
@@ -44,8 +77,14 @@ const calculateCoordinates = (workflow) => {
     const startX = (screenWidth - totalWidth) / 2;
 
     levels[level].forEach((nodeId, index) => {
+      const parentNode = workflow.adjacencyList[nodeId].parent;
+      const parentX = parentNode
+        ? coordinates[parentNode].x
+        : startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
       const x =
-        startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
+        workflow.adjacencyList[nodeId].type === "Action"
+          ? parentX
+          : startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
       const y =
         topMargin + level * (nodeHeight + verticalSpacing) + nodeHeight / 2;
       coordinates[nodeId] = { x, y };
