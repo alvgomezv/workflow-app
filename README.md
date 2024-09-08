@@ -25,6 +25,8 @@
 - [x] Paint paths between shapes
 - [x] View to paint the shapes based on coordinates object
 - [x] Basic function to paint the paths based on coordinates of shapes
+- [ ] Function to resize the Canvas to the height and width of the workflow
+- [ ] Function to center de Canvas
 - [ ] More advance function to paint paths starting and ending from specific places of shapes
 - [ ] Make paths directional with an arrow
 - [ ] Text for shapes

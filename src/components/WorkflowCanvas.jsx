@@ -9,16 +9,39 @@ import {
   matchFont,
   Paint,
 } from "@shopify/react-native-skia";
+import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import calculateCoordinates from "./../calculateCoordinates";
 
 const WorkflowCanvas = ({ workflow }) => {
-  const coordinates = calculateCoordinates(workflow);
-  console.log(coordinates);
-  console.log(workflow);
+  const actionWidth = 120;
+  const conditionWidth = 140;
+  const coordinates = calculateCoordinates(
+    workflow,
+    actionWidth,
+    conditionWidth
+  );
+
+  // Center the canvas with the Init node at the center horizontally and 50 from the top
+  const initNode = Object.entries(coordinates.coord).find(
+    ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
+  );
+  const initX = initNode ? initNode[1].x : 0;
+  const initY = initNode ? initNode[1].y : 0;
+
+  const screenWidth = Dimensions.get("window").width;
+  const marginLeft = screenWidth / 2 - initX;
+  const marginTop = 100 - initY;
 
   return (
-    <Canvas style={{ flex: 1 }}>
-      {Object.entries(coordinates).map(([nodeId, { x, y }]) => {
+    <Canvas
+      style={{
+        width: coordinates.canvasWidth,
+        height: coordinates.canvasHeight,
+        marginLeft,
+        marginTop,
+      }}
+    >
+      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
         const node = workflow.adjacencyList[nodeId];
         switch (node.type) {
           case "Init":
@@ -34,7 +57,7 @@ const WorkflowCanvas = ({ workflow }) => {
             return (
               <React.Fragment key={nodeId}>
                 <Path
-                  path={`M ${x} ${y - 50} L ${x + 70} ${y} L ${x} ${y + 50} L ${x - 70} ${y} Z`}
+                  path={`M ${x} ${y - 50} L ${x + conditionWidth / 2} ${y} L ${x} ${y + 50} L ${x - conditionWidth / 2} ${y} Z`}
                   color="blue"
                 >
                   <Paint color="#black" style="stroke" strokeWidth={2} />
@@ -54,7 +77,12 @@ const WorkflowCanvas = ({ workflow }) => {
                 >
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Rect>
-                <Tx text={node.name} y={y} x={x - 20} font={null} />
+                <Tx
+                  text={node.name}
+                  y={y}
+                  x={x - actionWidth / 2}
+                  font={null}
+                />
               </React.Fragment>
             );
           case "End":
@@ -70,10 +98,10 @@ const WorkflowCanvas = ({ workflow }) => {
             return null;
         }
       })}
-      {Object.entries(coordinates).map(([nodeId, { x, y }]) => {
+      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
         const node = workflow.adjacencyList[nodeId];
         return node.neighbors.map((neighborId) => {
-          const { x: nx, y: ny } = coordinates[neighborId];
+          const { x: nx, y: ny } = coordinates.coord[neighborId];
           return (
             <Path
               key={`${nodeId}-${neighborId}`}

@@ -54,7 +54,7 @@ const initializeWorkflow = () => {
 };
 
 export default function App() {
-  /* //Pan Gesture Handler for moving the canvas
+  //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
     usePanHandler();
 
@@ -68,7 +68,7 @@ export default function App() {
   };
   const font = matchFont(fontStyle);
 
-  const translationX = useSharedValue(200); // Circle's X position
+  /*  const translationX = useSharedValue(200); // Circle's X position
   const translationY = useSharedValue(250); // Circle's Y position
   const pathX1 = useSharedValue(200); // Line's X1 position
   const pathY1 = useSharedValue(310); // Line's Y1 position
@@ -102,17 +102,10 @@ export default function App() {
 
       return [...prevCircles, { id: newId, color: "blue", cx: 200, cy: newCy }];
     });
-  };
+  }; 
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(line, circle, handleLineTouch);
-
-  useEffect(() => {
-    circles.forEach((circle) => {
-      console.log(circle);
-    });
-    console.log("----");
-  }, [circles]); */
+  const tapGesture = useTapHandler(line, circle, handleLineTouch);*/
 
   const [workflow, setWorkflow] = useState(initializeWorkflow);
   const [showNodeForm, setShowNodeForm] = useState(false);
@@ -202,7 +195,7 @@ export default function App() {
   };
 
   return (
-    /*  <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <PanGestureHandler
         onGestureEvent={handlePan}
         onHandlerStateChange={handlePanStateChange}
@@ -215,28 +208,26 @@ export default function App() {
             },
           ]}
         >
-          <GestureDetector gesture={tapGesture}>
-            <Canvas style={{ flex: 1 }}>
-            </Canvas>
-          </GestureDetector>
-          <StatusBar style="auto" />
+          {/* <GestureDetector gesture={tapGesture}> */}
+          <View style={styles.container}>
+            {showNodeForm ? (
+              <NodeForm addAction={addAction} addCondition={addCondition} />
+            ) : (
+              <>
+                <WorkflowCanvas workflow={workflow} />
+                <View style={styles.bottomContainer}>
+                  <Text style={styles.addNode} onPress={handleAddNodePress}>
+                    Add Node
+                  </Text>
+                </View>
+              </>
+            )}
+          </View>
+          {/* </GestureDetector> */}
+          {/* A */}
         </Animated.View>
       </PanGestureHandler>
-    </GestureHandlerRootView> */
-    <View style={styles.container}>
-      {showNodeForm ? (
-        <NodeForm addAction={addAction} addCondition={addCondition} />
-      ) : (
-        <>
-          <WorkflowCanvas workflow={workflow} />
-          <View style={styles.bottomContainer}>
-            <Text style={styles.addNode} onPress={handleAddNodePress}>
-              Add Node
-            </Text>
-          </View>
-        </>
-      )}
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
