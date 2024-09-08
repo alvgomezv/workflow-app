@@ -54,6 +54,10 @@ const initializeWorkflow = () => {
 };
 
 export default function App() {
+  const [workflow, setWorkflow] = useState(initializeWorkflow);
+  const [showNodeForm, setShowNodeForm] = useState(false);
+  const [lines, setLines] = useState({});
+
   //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
     usePanHandler();
@@ -68,32 +72,7 @@ export default function App() {
   };
   const font = matchFont(fontStyle);
 
-  /*  const translationX = useSharedValue(200); // Circle's X position
-  const translationY = useSharedValue(250); // Circle's Y position
-  const pathX1 = useSharedValue(200); // Line's X1 position
-  const pathY1 = useSharedValue(310); // Line's Y1 position
-  const pathX2 = useSharedValue(200); // Line's X2 position
-  const pathY2 = useSharedValue(440); // Line's Y2 position
-  const greenCircleRadius = 60;
-
-  const circle = {
-    cx: 200,
-    cy: 250,
-    radius: 60,
-  };
-  const line = {
-    x1: 200,
-    y1: 310,
-    x2: 200,
-    y2: 440,
-  };
-
-  const [circles, setCircles] = useState([
-    { id: 1, color: "green", cx: 200, cy: 250 },
-    { id: 2, color: "red", cx: 200, cy: 350 },
-  ]);
-
-  const handleLineTouch = () => {
+  /* const handleLineTouch = () => {
     setCircles((prevCircles) => {
       const distance = 100;
       const lastCircle = prevCircles[prevCircles.length - 1];
@@ -102,13 +81,10 @@ export default function App() {
 
       return [...prevCircles, { id: newId, color: "blue", cx: 200, cy: newCy }];
     });
-  }; 
+  };  */
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(line, circle, handleLineTouch);*/
-
-  const [workflow, setWorkflow] = useState(initializeWorkflow);
-  const [showNodeForm, setShowNodeForm] = useState(false);
+  const tapGesture = useTapHandler(lines);
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -216,16 +192,15 @@ export default function App() {
               },
             ]}
           >
-            {/* <GestureDetector gesture={tapGesture}> */}
-            <View style={styles.container}>
-              {!showNodeForm && (
-                <>
-                  <WorkflowCanvas workflow={workflow} />
-                </>
-              )}
-            </View>
-            {/* </GestureDetector> */}
-            {/* A */}
+            <GestureDetector gesture={tapGesture}>
+              <View style={styles.container}>
+                {!showNodeForm && (
+                  <>
+                    <WorkflowCanvas workflow={workflow} setLines={setLines} />
+                  </>
+                )}
+              </View>
+            </GestureDetector>
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>

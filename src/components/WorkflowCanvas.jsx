@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Canvas,
   Path,
@@ -31,12 +31,32 @@ const getNodeHeight = (nodeId) => {
   }
 };
 
-const WorkflowCanvas = ({ workflow }) => {
+const WorkflowCanvas = ({ workflow, setLines }) => {
   const coordinates = calculateCoordinates(
     workflow,
     actionWidth,
     conditionWidth
   );
+
+  // Use effect to record the lines
+  useEffect(() => {
+    const newLines = {};
+    Object.entries(coordinates.coord).forEach(([nodeId, { x, y }]) => {
+      const node = workflow.adjacencyList[nodeId];
+      const nodeHeight = getNodeHeight(nodeId);
+      node.neighbors.map((neighborId) => {
+        const { x: nx, y: ny } = coordinates.coord[neighborId];
+        const neighborHeight = getNodeHeight(neighborId);
+        newLines[[nodeId, neighborId]] = {
+          x1: x,
+          y1: y + nodeHeight / 2,
+          x2: nx,
+          y2: ny - neighborHeight / 2,
+        };
+      });
+    });
+    setLines(newLines);
+  }, [workflow]);
 
   // Center the canvas with the Init node at the center horizontally and 100 from the top
   const initNode = Object.entries(coordinates.coord).find(
