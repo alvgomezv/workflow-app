@@ -25,8 +25,8 @@
 - [x] Paint paths between shapes
 - [x] View to paint the shapes based on coordinates object
 - [x] Basic function to paint the paths based on coordinates of shapes
-- [ ] Function to resize the Canvas to the height and width of the workflow
-- [ ] Function to center de Canvas
+- [x] Function to resize the Canvas to the height and width of the workflow
+- [x] Function to center de Canvas
 - [ ] More advance function to paint paths starting and ending from specific places of shapes
 - [ ] Make paths directional with an arrow
 - [ ] Text for shapes
@@ -54,15 +54,16 @@
 ### Interaction with Gestures
 
 - [x] Move the workflow to all directions
-- [ ] Zoom in an out the workflow view
 - [ ] Tap a line to create new components
 - [ ] Tap the text of a shape to edit text
+- [ ] Zoom in an out the workflow view
 - [ ] Tap long a shape to edit/delete shape
 
 ### Workflow Algorithms
 
-- [ ] Function to orginize the shapes by levels (Fix)
-- [ ] Function to organize shapes in the Canvas based on levels and give out a coordinates object (Fix)
+- [x] Function to orginize the shapes by levels (Fix)
+- [x] Function to organize shapes in the Canvas based on levels and give out a coordinates object (Basic tree structure)
+- [ ] (Extra) Implement auto adjusting structure to paint the shapes in the workflow
 
 ### Basic Navigation
 

@@ -1,7 +1,7 @@
 import { Dimensions } from "react-native";
 
 // Function to calculate the maximum width and height of the coordinates
-const calculateCanvasSize = (coordinates, margin) => {
+const calculateCanvasSize = (coordinates, canvasMargin) => {
   let maxWidth = 0;
   let maxHeight = 0;
 
@@ -11,8 +11,8 @@ const calculateCanvasSize = (coordinates, margin) => {
   });
 
   return {
-    canvasWidth: maxWidth + margin,
-    canvasHeight: maxHeight + margin,
+    canvasWidth: maxWidth + canvasMargin,
+    canvasHeight: maxHeight + canvasMargin,
   };
 };
 
@@ -36,7 +36,7 @@ const calculateCoordinates = (
   workflow,
   actionWidth,
   conditionWidth,
-  margin = 10
+  marginBeetweenShapes = 10
 ) => {
   const levels = {};
   const coordinates = {};
@@ -45,11 +45,23 @@ const calculateCoordinates = (
   const nodeWidth = 120;
   const nodeHeight = 120;
   const verticalSpacing = 40;
-  const horizontalSpacing = 50;
+  const horizontalSpacing = 80;
   const topMargin = 80; // Margin from the top of the screen
 
   // Get the actual screen width
   const screenWidth = Dimensions.get("window").width;
+
+  // Function to remove "E" nodes from all levels except the last one
+  const removeENodesExceptLast = () => {
+    const levelKeys = Object.keys(levels).map(Number);
+    const maxLevel = Math.max(...levelKeys);
+
+    levelKeys.forEach((level) => {
+      if (level !== maxLevel) {
+        levels[level] = levels[level].filter((nodeId) => nodeId !== "E");
+      }
+    });
+  };
 
   const calculateLevel = (nodeId, level, parentId = null) => {
     if (!levels[level]) {
@@ -64,37 +76,26 @@ const calculateCoordinates = (
     }
 
     const node = workflow.adjacencyList[nodeId];
-    if (!node) {
-      console.error(
-        `Node with ID ${nodeId} does not exist in the adjacency list.`
-      );
-      return;
-    }
 
     node.neighbors.forEach((neighborId) => {
       const neighborLevel = level + 1;
       calculateLevel(neighborId, neighborLevel, nodeId);
     });
+
+    // Remove "E" nodes from all levels except the last one
+    removeENodesExceptLast();
   };
 
   // Start from the Init node
   calculateLevel("I", 0);
   console.log(levels, parents);
 
-  // Function to remove "E" nodes from all levels except the last one
-  const removeENodesExceptLast = () => {
-    const levelKeys = Object.keys(levels).map(Number);
-    const maxLevel = Math.max(...levelKeys);
+  let previousLevelNodeCount = null;
+  let isNodeCountLower = false;
 
-    levelKeys.forEach((level) => {
-      if (level !== maxLevel) {
-        levels[level] = levels[level].filter((nodeId) => nodeId !== "E");
-      }
-    });
-  };
+  //-------------------------------------------------------------------------------------------------------------------------
 
-  // Remove "E" nodes from all levels except the last one
-  removeENodesExceptLast();
+  //TREE FUNCTION
 
   Object.keys(levels).forEach((level) => {
     const nodesInLevel = levels[level].length;
@@ -106,6 +107,11 @@ const calculateCoordinates = (
     const hasConditionalNode = levels[level].some(
       (nodeId) => workflow.adjacencyList[nodeId].type === "Condition"
     );
+
+    // Compare the number of nodes in the current level with the previous level
+    if (previousLevelNodeCount !== null) {
+      isNodeCountLower = nodesInLevel < previousLevelNodeCount;
+    }
 
     levels[level].forEach((nodeId, index) => {
       const parentNode = parents[nodeId];
@@ -120,9 +126,176 @@ const calculateCoordinates = (
         topMargin + level * (nodeHeight + verticalSpacing) + nodeHeight / 2;
       coordinates[nodeId] = { x, y };
     });
+
+    // Update the previous level node count
+    previousLevelNodeCount = nodesInLevel;
   });
 
-  const { canvasWidth, canvasHeight } = calculateCanvasSize(coordinates, 200);
+  //-------------------------------------------------------------------------------------------------------------------------
+
+  // ORDERED DOWN FUNCTION
+
+  // Function to check if shapes in a level are closer than the margin
+  /*   const areShapesTooCloseInLevel = (levelNodes) => {
+    console.log("Checking level:", levelNodes);
+    for (let i = 0; i < levelNodes.length; i++) {
+      for (let j = i + 1; j < levelNodes.length; j++) {
+        const nodeA = coordinates[levelNodes[i]];
+        const nodeB = coordinates[levelNodes[j]];
+          console.log(
+          "Nodes - ",
+          levelNodes[i],
+          ":",
+          nodeA,
+          levelNodes[j],
+          ":",
+          nodeB
+        ); 
+        const shapeWidthA = levelNodes[i].startsWith("A")
+          ? actionWidth
+          : conditionWidth;
+        const shapeWidthB = levelNodes[j].startsWith("A")
+          ? actionWidth
+          : conditionWidth;
+        const distance = Math.abs(nodeA.x - nodeB.x);
+          console.log(
+          "Distance between",
+          levelNodes[i],
+          "and",
+          levelNodes[j],
+          ": ",
+          distance
+        );
+        console.log(
+          "Margin:",
+          (shapeWidthA + shapeWidthB) / 2 + marginBeetweenShapes
+        ); 
+        if (distance < (shapeWidthA + shapeWidthB) / 2 + marginBeetweenShapes) {
+          return [levelNodes[i], levelNodes[j]];
+        }
+      }
+    }
+    return null;
+  };
+
+  // Function to adjust conditional parent nodes and recalculate the level
+  const adjustAndRecalculateLevel = (levelNodes, level) => {
+    let tooClose;
+    let counter = 0;
+    while (
+      (tooClose = areShapesTooCloseInLevel(levelNodes)) !== null &&
+      counter < 5
+    ) {
+      console.log("Too close:", tooClose);
+      if (counter === 5) {
+        console.log("Counter reached 5");
+      }
+      const [nodeA, nodeB] = tooClose;
+      const parentNodeA = parents[nodeA];
+      const parentNodeB = parents[nodeB];
+
+      if (
+        parentNodeA &&
+        workflow.adjacencyList[parentNodeA].type === "Condition"
+      ) {
+        coordinates[parentNodeA].x -= marginBeetweenShapes / 2;
+      }
+
+      if (
+        parentNodeB &&
+        workflow.adjacencyList[parentNodeB].type === "Condition"
+      ) {
+        coordinates[parentNodeB].x += marginBeetweenShapes / 2;
+      }
+
+      // Recalculate the coordinates of the level
+      levelNodes.forEach((nodeId, index) => {
+        const parentNode = parents[nodeId];
+        let x, y;
+
+        if (parentNode) {
+          const parentX = coordinates[parentNode].x;
+          const parentY = coordinates[parentNode].y;
+
+          if (workflow.adjacencyList[nodeId].type === "Condition") {
+            // Position conditional nodes slightly to the left and right
+            if (nodeId.includes("a")) {
+              x = parentX - nodeWidth / 2 - horizontalSpacing / 2;
+            } else {
+              x = parentX + nodeWidth / 2 + horizontalSpacing / 2;
+            }
+            y = parentY + nodeHeight + verticalSpacing;
+          } else if (workflow.adjacencyList[nodeId].type === "End") {
+            // Position End nodes at the x coordinate of the Init node
+            x =
+              startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
+            console.log("level:", level);
+            y = (verticalSpacing + nodeHeight) * level + nodeHeight;
+          } else {
+            x = parentX;
+            y = parentY + nodeHeight + verticalSpacing;
+          }
+        } else {
+          x = startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
+          y =
+            topMargin + level * (nodeHeight + verticalSpacing) + nodeHeight / 2;
+        }
+
+        coordinates[nodeId] = { x, y };
+      });
+    }
+  };
+
+  Object.keys(levels).forEach((level) => {
+    const nodesInLevel = levels[level].length;
+    const totalWidth =
+      nodesInLevel * (nodeWidth + horizontalSpacing) - horizontalSpacing;
+    const startX = (screenWidth - totalWidth) / 2;
+
+    levels[level].forEach((nodeId, index) => {
+      const parentNode = parents[nodeId];
+      let x, y;
+
+      if (parentNode) {
+        console.log("Parent node:", parentNode);
+        const parentX = coordinates[parentNode].x;
+        const parentY = coordinates[parentNode].y;
+
+        if (workflow.adjacencyList[nodeId].type === "Condition") {
+          // Position conditional nodes slightly to the left and right
+          if (nodeId.includes("a")) {
+            x = parentX - nodeWidth / 2 - horizontalSpacing / 2;
+          } else {
+            x = parentX + nodeWidth / 2 + horizontalSpacing / 2;
+          }
+          y = parentY + nodeHeight + verticalSpacing;
+        } else if (workflow.adjacencyList[nodeId].type === "End") {
+          // Position End nodes at the x coordinate of the Init node
+          x = startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
+          console.log("level:", level);
+          y = (verticalSpacing + nodeHeight) * level + nodeHeight;
+        } else {
+          x = parentX;
+          y = parentY + nodeHeight + verticalSpacing;
+        }
+      } else {
+        x = startX + index * (nodeWidth + horizontalSpacing) + nodeWidth / 2;
+        y = topMargin + level * (nodeHeight + verticalSpacing) + nodeHeight / 2;
+      }
+
+      coordinates[nodeId] = { x, y };
+    });
+     console.log("Level:", level, "coordinates of level:", coordinates); 
+
+    // Adjust conditional parent nodes and recalculate the level if necessary
+    adjustAndRecalculateLevel(levels[level], level);
+  }); 
+  */
+
+  //-------------------------------------------------------------------------------------------------------------------------
+
+  // Recalculate the coordinates to center them in the canvas
+  const { canvasWidth, canvasHeight } = calculateCanvasSize(coordinates, 500);
   adjustedCoordinates.coord = recalculateCoordinates(
     coordinates,
     canvasWidth,
@@ -131,36 +304,6 @@ const calculateCoordinates = (
   //add the canvasWidth and canvasHeight to the return object
   adjustedCoordinates.canvasWidth = canvasWidth;
   adjustedCoordinates.canvasHeight = canvasHeight;
-
-  /* // Function to check if shapes are closer than the margin
-  const areShapesTooClose = () => {
-    const nodes = Object.keys(coordinates);
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const nodeA = coordinates[nodes[i]];
-        const nodeB = coordinates[nodes[j]];
-        const shapeWidthA = nodes[i].startsWith("A")
-          ? actionWidth
-          : conditionWidth;
-        const shapeWidthB = nodes[j].startsWith("A")
-          ? actionWidth
-          : conditionWidth;
-        const distance = Math.sqrt(
-          Math.pow(nodeA.x - nodeB.x, 2) + Math.pow(nodeA.y - nodeB.y, 2)
-        );
-        if (distance < (shapeWidthA + shapeWidthB) / 2 + margin) {
-          console.log(
-            `Nodes ${nodes[i]} and ${nodes[j]} are too close to each other.`
-          );
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  const tooClose = areShapesTooClose();
-  console.log("Are any shapes too close?", tooClose); */
 
   return adjustedCoordinates;
 };
