@@ -195,39 +195,46 @@ export default function App() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <PanGestureHandler
-        onGestureEvent={handlePan}
-        onHandlerStateChange={handlePanStateChange}
-      >
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              transform: [{ translateX }, { translateY }],
-            },
-          ]}
+    <>
+      {showNodeForm && (
+        <NodeForm
+          style={styles.nodeForm}
+          addAction={addAction}
+          addCondition={addCondition}
+        />
+      )}
+      <GestureHandlerRootView>
+        <PanGestureHandler
+          onGestureEvent={handlePan}
+          onHandlerStateChange={handlePanStateChange}
         >
-          {/* <GestureDetector gesture={tapGesture}> */}
-          <View style={styles.container}>
-            {showNodeForm ? (
-              <NodeForm addAction={addAction} addCondition={addCondition} />
-            ) : (
-              <>
-                <WorkflowCanvas workflow={workflow} />
-                <View style={styles.bottomContainer}>
-                  <Text style={styles.addNode} onPress={handleAddNodePress}>
-                    Add Node
-                  </Text>
-                </View>
-              </>
-            )}
-          </View>
-          {/* </GestureDetector> */}
-          {/* A */}
-        </Animated.View>
-      </PanGestureHandler>
-    </GestureHandlerRootView>
+          <Animated.View
+            style={[
+              styles.container,
+              {
+                transform: [{ translateX }, { translateY }],
+              },
+            ]}
+          >
+            {/* <GestureDetector gesture={tapGesture}> */}
+            <View style={styles.container}>
+              {!showNodeForm && (
+                <>
+                  <WorkflowCanvas workflow={workflow} />
+                </>
+              )}
+            </View>
+            {/* </GestureDetector> */}
+            {/* A */}
+          </Animated.View>
+        </PanGestureHandler>
+      </GestureHandlerRootView>
+      <View style={styles.bottomContainer}>
+        <Text style={styles.addNode} onPress={handleAddNodePress}>
+          Add Node
+        </Text>
+      </View>
+    </>
   );
 }
 
@@ -251,5 +258,9 @@ const styles = StyleSheet.create({
     margin: 10, // Adjust the margin as needed
     textAlign: "center",
     fontWeight: "bold",
+  },
+  nodeForm: {
+    flex: 1,
+    marginTop: 100,
   },
 });

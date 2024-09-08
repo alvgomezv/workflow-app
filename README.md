@@ -27,10 +27,11 @@
 - [x] Basic function to paint the paths based on coordinates of shapes
 - [x] Function to resize the Canvas to the height and width of the workflow
 - [x] Function to center de Canvas
-- [ ] More advance function to paint paths starting and ending from specific places of shapes
-- [ ] Make paths directional with an arrow
+- [x] Function to paint paths from the bottom to the top of the shapes
+- [x] Make paths directional with an arrow
+- [x] Improve design of shapes
 - [ ] Text for shapes
-- [ ] Improve design of shapes
+- [ ] (Extra) More advance function to paint paths starting and ending from specific places of shapes
 
 ### Edit and Delete shapes
 
