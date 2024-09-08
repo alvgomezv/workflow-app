@@ -25,16 +25,16 @@
 - [x] Paint paths between shapes
 - [x] View to paint the shapes based on coordinates object
 - [x] Basic function to paint the paths based on coordinates of shapes
-- [_] More advance function to paint paths starting and ending from specific places of shapes
-- [_] Make paths directional with an arrow
-- [_] Text for shapes
-- [_] Improve design of shapes
+- [ ] More advance function to paint paths starting and ending from specific places of shapes
+- [ ] Make paths directional with an arrow
+- [ ] Text for shapes
+- [ ] Improve design of shapes
 
 ### Edit and Delete shapes
 
-- [_] Make the text of the shapes editable
-- [_] Delete shapes with a form
-- [_] Edit shapes, changing them from action to condition and condition to action ??
+- [ ] Make the text of the shapes editable
+- [ ] Delete shapes with a form
+- [ ] Edit shapes, changing them from action to condition and condition to action ??
 
 ### Workflow Data Structure
 
@@ -52,31 +52,31 @@
 ### Interaction with Gestures
 
 - [x] Move the workflow to all directions
-- [_] Zoom in an out the workflow view
-- [_] Tap a line to create new components
-- [_] Tap the text of a shape to edit text
-- [_] Tap long a shape to edit/delete shape
+- [ ] Zoom in an out the workflow view
+- [ ] Tap a line to create new components
+- [ ] Tap the text of a shape to edit text
+- [ ] Tap long a shape to edit/delete shape
 
 ### Workflow Algorithms
 
-- [_] Function to orginize the shapes by levels (Fix)
-- [_] Function to organize shapes in the Canvas based on levels and give out a coordinates object (Fix)
+- [ ] Function to orginize the shapes by levels (Fix)
+- [ ] Function to organize shapes in the Canvas based on levels and give out a coordinates object (Fix)
 
 ### Basic Navigation
 
 - [x] Workflow page
-- [_] Navigation with tabs for more than one Workflow page
-- [_] Create new Workflow pages in a new tab
-- [_] Panel to go throw Workflow pages
-- [_] Create new Workflow page button in the Panel
+- [ ] Navigation with tabs for more than one Workflow page
+- [ ] Create new Workflow pages in a new tab
+- [ ] Panel to go throw Workflow pages
+- [ ] Create new Workflow page button in the Panel
 
 ### Session Management
 
-- [_] Save workflow when closing the app
-- [_] Saving all the workflows when clsing the app
+- [ ] Save workflow when closing the app
+- [ ] Saving all the workflows when clsing the app
 
 ### Animations
 
-- [_] Create an instructions panel shown for a few seconds at the start of the app
+- [ ] Create an instructions panel shown for a few seconds at the start of the app
 
 ### Automated Tests
