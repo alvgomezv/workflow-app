@@ -66,7 +66,7 @@ const calculateCoordinates = (
   const parents = {}; // To track parent-child relationships
   const nodeWidth = 120;
   const nodeHeight = 120;
-  const verticalSpacing = 40;
+  const verticalSpacing = 60;
   const horizontalSpacing = 80;
   const topMargin = 80; // Margin from the top of the screen
 

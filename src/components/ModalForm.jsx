@@ -35,9 +35,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    width: 300,
+    width: 250,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
     borderBlockColor: "black",
     borderWidth: 0,

@@ -87,6 +87,52 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
         marginTop,
       }}
     >
+      {/* // Paint the lines between shapes */}
+      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
+        const node = workflow.adjacencyList[nodeId];
+        const nodeHeight = getNodeHeight(nodeId);
+        return node.neighbors.map((neighborId) => {
+          const { x: nx, y: ny } = coordinates.coord[neighborId];
+          const neighborHeight = getNodeHeight(neighborId);
+
+          // Calculate the direction of the line
+          const angle = Math.atan2(
+            ny - neighborHeight / 2 - (y + nodeHeight / 2),
+            nx - x
+          );
+
+          // Calculate the points for the arrowhead
+          const arrowX1 =
+            nx - arrowSize * Math.cos(angle - Math.PI / arrowWidth);
+          const arrowY1 =
+            ny -
+            neighborHeight / 2 -
+            arrowSize * Math.sin(angle - Math.PI / arrowWidth);
+          const arrowX2 =
+            nx - arrowSize * Math.cos(angle + Math.PI / arrowWidth);
+          const arrowY2 =
+            ny -
+            neighborHeight / 2 -
+            arrowSize * Math.sin(angle + Math.PI / arrowWidth);
+
+          return (
+            <React.Fragment key={`${nodeId}-${neighborId}`}>
+              <Path
+                path={`M ${x} ${y + nodeHeight / 2} L ${nx} ${ny - neighborHeight / 2}`}
+                color="black"
+                style="stroke"
+                strokeWidth={2}
+              />
+              <Path
+                path={`M ${nx} ${ny - neighborHeight / 2} L ${arrowX1} ${arrowY1} L ${arrowX2} ${arrowY2} Z`}
+                color="black"
+                style="fill"
+              />
+            </React.Fragment>
+          );
+        });
+      })}
+      {/* // Paint the shapes */}
       {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
         const node = workflow.adjacencyList[nodeId];
         switch (node.type) {
@@ -143,50 +189,6 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
           default:
             return null;
         }
-      })}
-      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
-        const node = workflow.adjacencyList[nodeId];
-        const nodeHeight = getNodeHeight(nodeId);
-        return node.neighbors.map((neighborId) => {
-          const { x: nx, y: ny } = coordinates.coord[neighborId];
-          const neighborHeight = getNodeHeight(neighborId);
-
-          // Calculate the direction of the line
-          const angle = Math.atan2(
-            ny - neighborHeight / 2 - (y + nodeHeight / 2),
-            nx - x
-          );
-
-          // Calculate the points for the arrowhead
-          const arrowX1 =
-            nx - arrowSize * Math.cos(angle - Math.PI / arrowWidth);
-          const arrowY1 =
-            ny -
-            neighborHeight / 2 -
-            arrowSize * Math.sin(angle - Math.PI / arrowWidth);
-          const arrowX2 =
-            nx - arrowSize * Math.cos(angle + Math.PI / arrowWidth);
-          const arrowY2 =
-            ny -
-            neighborHeight / 2 -
-            arrowSize * Math.sin(angle + Math.PI / arrowWidth);
-
-          return (
-            <React.Fragment key={`${nodeId}-${neighborId}`}>
-              <Path
-                path={`M ${x} ${y + nodeHeight / 2} L ${nx} ${ny - neighborHeight / 2}`}
-                color="black"
-                style="stroke"
-                strokeWidth={2}
-              />
-              <Path
-                path={`M ${nx} ${ny - neighborHeight / 2} L ${arrowX1} ${arrowY1} L ${arrowX2} ${arrowY2} Z`}
-                color="black"
-                style="fill"
-              />
-            </React.Fragment>
-          );
-        });
       })}
     </Canvas>
   );

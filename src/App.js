@@ -40,6 +40,7 @@ import calculateCoordinates from "./calculateCoordinates";
 import WorkflowCanvas from "./components/WorkflowCanvas";
 import CustomModal from "./components/ModalForm";
 import AddNodeForm from "./components/AddNodeForm";
+import AddNodeSimpleForm from "./components/AddNodeSimpeForm";
 
 const initializeWorkflow = () => {
   // Initialize the workflow graph
@@ -67,6 +68,14 @@ export default function App() {
   const [lines, setLines] = useState({});
   const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedEdge, setSelectedEdge] = useState(null);
+
+  //When selected edge changes, open the modal
+  useEffect(() => {
+    if (selectedEdge) {
+      openModal();
+    }
+  }, [selectedEdge]);
 
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
@@ -86,7 +95,7 @@ export default function App() {
   const font = matchFont(fontStyle);
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(lines, 10, margins);
+  const tapGesture = useTapHandler(lines, 10, margins, setSelectedEdge);
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -192,10 +201,11 @@ export default function App() {
                     setMargins={setMargins}
                   />
                   <CustomModal isVisible={isModalVisible} onClose={closeModal}>
-                    <AddNodeForm
+                    <AddNodeSimpleForm
                       style={styles.nodeForm}
                       addAction={addAction}
                       addCondition={addCondition}
+                      selectedEdge={selectedEdge}
                     />
                   </CustomModal>
                 </View>
@@ -204,7 +214,7 @@ export default function App() {
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>
-      <Button title="Add Node" onPress={openModal} />
+      {/* <Button title="Add Node" onPress={openModal} /> */}
     </>
   );
 }

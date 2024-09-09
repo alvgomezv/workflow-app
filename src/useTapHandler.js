@@ -36,7 +36,12 @@ const distanceToLine = (x, y, x1, y1, x2, y2, margins) => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
-export const useTapHandler = (lines, threshold = 10, margins) => {
+export const useTapHandler = (
+  lines,
+  threshold = 10,
+  margins,
+  setSelectedEdge
+) => {
   const gesture = Gesture.Tap()
     .onEnd((event) => {
       const { x, y } = event;
@@ -51,6 +56,7 @@ export const useTapHandler = (lines, threshold = 10, margins) => {
         const distance = distanceToLine(x, y, x1, y1, x2, y2, margins);
         if (distance < threshold) {
           console.log(`Tapped on line between ${node1} and ${node2}`);
+          setSelectedEdge([node1, node2]);
         }
       });
     })
