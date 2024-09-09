@@ -21,6 +21,9 @@ const circleRadius = 50;
 const arrowSize = 20;
 const arrowWidth = 12;
 
+let marginLeft = 0;
+let marginTop = 0;
+
 const getNodeHeight = (nodeId) => {
   if (nodeId.startsWith("A")) {
     return actionHeight;
@@ -31,15 +34,19 @@ const getNodeHeight = (nodeId) => {
   }
 };
 
-const WorkflowCanvas = ({ workflow, setLines }) => {
+const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
+  // Calculate the coordinates of the nodes and the size of the adjusted canvas
   const coordinates = calculateCoordinates(
     workflow,
     actionWidth,
-    conditionWidth
+    conditionWidth,
+    actionHeight,
+    conditionHeight
   );
 
-  // Use effect to record the lines
+  // Use effect
   useEffect(() => {
+    // Record the lines (paths) between shapes, to paint on the canvas
     const newLines = {};
     Object.entries(coordinates.coord).forEach(([nodeId, { x, y }]) => {
       const node = workflow.adjacencyList[nodeId];
@@ -56,18 +63,20 @@ const WorkflowCanvas = ({ workflow, setLines }) => {
       });
     });
     setLines(newLines);
+
+    // Center the canvas with the Init node at the center horizontally and 100 from the top
+    const initNode = Object.entries(coordinates.coord).find(
+      ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
+    );
+    const initX = initNode ? initNode[1].x : 0;
+    const initY = initNode ? initNode[1].y : 0;
+
+    const screenWidth = Dimensions.get("window").width;
+    marginLeft = screenWidth / 2 - initX;
+    marginTop = 100 - initY;
+
+    setMargins({ marginTop, marginLeft });
   }, [workflow]);
-
-  // Center the canvas with the Init node at the center horizontally and 100 from the top
-  const initNode = Object.entries(coordinates.coord).find(
-    ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
-  );
-  const initX = initNode ? initNode[1].x : 0;
-  const initY = initNode ? initNode[1].y : 0;
-
-  const screenWidth = Dimensions.get("window").width;
-  const marginLeft = screenWidth / 2 - initX;
-  const marginTop = 100 - initY;
 
   return (
     <Canvas

@@ -37,7 +37,7 @@
 
 - [ ] Make the text of the shapes editable
 - [ ] Delete shapes with a form
-- [ ] Edit shapes, changing them from action to condition and condition to action ??
+- [ ] (Extra) Edit shapes, changing them from action to condition and condition to action
 
 ### Workflow Data Structure
 
@@ -55,10 +55,11 @@
 ### Interaction with Gestures
 
 - [x] Move the workflow to all directions
+- [x] Detect line that has been tapped
 - [ ] Tap a line to create new components
 - [ ] Tap the text of a shape to edit text
 - [ ] Zoom in an out the workflow view
-- [ ] Tap long a shape to edit/delete shape
+- [ ] (Extra) Tap long a shape to edit/delete shape
 
 ### Workflow Algorithms
 
@@ -77,7 +78,7 @@
 ### Session Management
 
 - [ ] Save workflow when closing the app
-- [ ] Saving all the workflows when clsing the app
+- [ ] Saving all the workflows when closing the app
 
 ### Animations
 

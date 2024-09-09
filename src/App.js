@@ -57,6 +57,7 @@ export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
   const [showNodeForm, setShowNodeForm] = useState(false);
   const [lines, setLines] = useState({});
+  const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
 
   //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
@@ -84,7 +85,7 @@ export default function App() {
   };  */
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(lines);
+  const tapGesture = useTapHandler(lines, 10, margins);
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -196,7 +197,11 @@ export default function App() {
               <View style={styles.container}>
                 {!showNodeForm && (
                   <>
-                    <WorkflowCanvas workflow={workflow} setLines={setLines} />
+                    <WorkflowCanvas
+                      workflow={workflow}
+                      setLines={setLines}
+                      setMargins={setMargins}
+                    />
                   </>
                 )}
               </View>

@@ -1,14 +1,34 @@
 import { Dimensions } from "react-native";
 
 // Function to calculate the maximum width and height of the coordinates
-const calculateCanvasSize = (coordinates, canvasMargin) => {
-  let maxWidth = 0;
-  let maxHeight = 0;
+const calculateCanvasSize = (
+  coordinates,
+  canvasMargin,
+  maxWidthOfShapes,
+  maxHeightOfShapes
+) => {
+  let maxX = 0;
+  let maxY = 0;
+  let minX = Infinity;
+  let minY = Infinity;
 
   Object.values(coordinates).forEach(({ x, y }) => {
-    if (x > maxWidth) maxWidth = x;
-    if (y > maxHeight) maxHeight = y;
+    if (x + maxWidthOfShapes / 2 > maxX) {
+      maxX = x + maxWidthOfShapes / 2;
+    }
+    if (y + maxHeightOfShapes / 2 > maxY) {
+      maxY = y + maxHeightOfShapes / 2;
+    }
+    if (x - maxWidthOfShapes / 2 < minX) {
+      minX = x - maxWidthOfShapes / 2;
+    }
+    if (y - maxHeightOfShapes / 2 < minY) {
+      minY = y - maxHeightOfShapes / 2;
+    }
   });
+
+  const maxWidth = maxX - minX + maxWidthOfShapes;
+  const maxHeight = maxY - minY + maxHeightOfShapes;
 
   return {
     canvasWidth: maxWidth + canvasMargin,
@@ -36,6 +56,8 @@ const calculateCoordinates = (
   workflow,
   actionWidth,
   conditionWidth,
+  actionHeight,
+  conditionHeight,
   marginBeetweenShapes = 10
 ) => {
   const levels = {};
@@ -50,6 +72,7 @@ const calculateCoordinates = (
 
   // Get the actual screen width
   const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
 
   // Function to remove "E" nodes from all levels except the last one
   const removeENodesExceptLast = () => {
@@ -88,7 +111,7 @@ const calculateCoordinates = (
 
   // Start from the Init node
   calculateLevel("I", 0);
-  console.log(levels, parents);
+  /*  console.log(levels, parents); */
 
   let previousLevelNodeCount = null;
   let isNodeCountLower = false;
@@ -294,8 +317,14 @@ const calculateCoordinates = (
 
   //-------------------------------------------------------------------------------------------------------------------------
 
-  // Recalculate the coordinates to center them in the canvas
-  const { canvasWidth, canvasHeight } = calculateCanvasSize(coordinates, 500);
+  // Calculate new canvas size to fit all the shapes inside
+  const { canvasWidth, canvasHeight } = calculateCanvasSize(
+    coordinates,
+    50,
+    actionWidth > conditionWidth ? actionWidth : conditionWidth,
+    actionHeight > conditionHeight ? actionHeight : conditionHeight
+  );
+  // Recalculate the coordinates to center them in the canvas, only in the X axis
   adjustedCoordinates.coord = recalculateCoordinates(
     coordinates,
     canvasWidth,
@@ -304,7 +333,9 @@ const calculateCoordinates = (
   //add the canvasWidth and canvasHeight to the return object
   adjustedCoordinates.canvasWidth = canvasWidth;
   adjustedCoordinates.canvasHeight = canvasHeight;
-
+  /*  console.log("Before - Width:", screenWidth, "Height:", screenHeight);
+  console.log("Adjusted - Width:", canvasWidth, "Height:", canvasHeight);
+ */
   return adjustedCoordinates;
 };
 
