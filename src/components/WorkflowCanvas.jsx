@@ -26,6 +26,7 @@ const conditionHeight = 100;
 const circleRadius = 50;
 const arrowSize = 20;
 const arrowWidth = 12;
+const startMarginTop = 150;
 
 let marginLeft = 0;
 let marginTop = 0;
@@ -90,7 +91,7 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
 
     const screenWidth = Dimensions.get("window").width;
     marginLeft = screenWidth / 2 - initX;
-    marginTop = 100 - initY;
+    marginTop = startMarginTop - initY;
 
     setMargins({ marginTop, marginLeft });
   }, [workflow]);

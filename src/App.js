@@ -47,9 +47,9 @@ const initializeWorkflow = () => {
 
   // Add nodes
   initialWorkflow.addNode("I", "Init", "InitNode");
-  initialWorkflow.addNode("C1a", "Condition", "Condition1");
-  initialWorkflow.addNode("C1b", "Condition", "Condition2");
-  initialWorkflow.addNode("A1", "Action", "Action1");
+  initialWorkflow.addNode("C1a", "Condition", "Condition 1");
+  initialWorkflow.addNode("C1b", "Condition", "Condition 2");
+  initialWorkflow.addNode("A1", "Action", "Action 1");
   initialWorkflow.addNode("E", "End", "EndNode");
 
   // Add edges
@@ -223,7 +223,7 @@ export default function App() {
             ]}
           > */}
         {/* <View style={styles.topBar} /> */}
-        <StatusBar style="dark" />
+        <StatusBar style="light" backgroundColor="black" />
         <GestureDetector gesture={composedGesture}>
           <Animated.View style={[styles.container, animatedStyles]}>
             <GestureDetector gesture={tapGesture}>

@@ -57,8 +57,8 @@
 - [x] Move the workflow to all directions
 - [x] Detect line that has been tapped
 - [x] Tap a line to create new components
+- [x] Zoom in an out the workflow view
 - [ ] Tap the text of a shape to edit text
-- [ ] Zoom in an out the workflow view
 - [ ] (Extra) Button to go back to Init node (center it)
 - [ ] (Extra) Tap long a shape to edit/delete shape
 
