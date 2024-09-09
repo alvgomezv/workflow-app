@@ -38,7 +38,7 @@ const distanceToLine = (x, y, x1, y1, x2, y2, margins) => {
 
 export const useTapHandler = (
   lines,
-  threshold = 10,
+  threshold = 20,
   margins,
   setSelectedEdge
 ) => {

@@ -3,15 +3,11 @@ import {
   StyleSheet,
   View,
   Text,
-  Animated,
   Platform,
   Button,
   SafeAreaView,
 } from "react-native";
 import { usePanHandler } from "./usePanHandler";
-import CircleComponent from "./components/CircleComponent";
-import SquareComponent from "./components/SquareComponent";
-import DiamondComponent from "./components/DiamondComponent";
 import {
   PinchGestureHandler,
   GestureHandlerRootView,
@@ -33,7 +29,10 @@ import {
   matchFont,
 } from "@shopify/react-native-skia";
 import { Use } from "react-native-svg";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
 import { WorkflowGraph } from "./WorkflowGraph";
 import calculateCoordinates from "./calculateCoordinates";
@@ -80,9 +79,50 @@ export default function App() {
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
 
-  //Pan Gesture Handler for moving the canvas
+  // uses the old version of gestures for panning
+  /* //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
-    usePanHandler();
+    usePanHandler(); */
+
+  //------- NEW PINCH-TO-ZOOM AND PAN GESTURES --------------
+
+  // Shared values for pinch-to-zoom and pan
+  const scale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const start = useSharedValue({ x: 0, y: 0 });
+
+  // Animated styles for pinch-to-zoom and pan
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { scale: scale.value },
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+      ],
+    };
+  });
+
+  // Pinch Gesture Handler for zooming in and out
+  const pinchGesture = Gesture.Pinch().onUpdate((e) => {
+    console.log("pinch");
+    scale.value = e.scale;
+  });
+
+  // Pan Gesture Handler for moving the canvas
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      start.value = { x: translateX.value, y: translateY.value };
+    })
+    .onUpdate((e) => {
+      translateX.value = e.translationX + start.value.x;
+      translateY.value = e.translationY + start.value.y;
+    });
+
+  // Combine pinch and pan gestures using Gesture.Race
+  const composedGesture = Gesture.Race(pinchGesture, panGesture);
+
+  //--------------------------------------------------------
 
   // Gesture handler for detecting tap on the line
   const tapGesture = useTapHandler(lines, 10, margins, setSelectedEdge);
@@ -170,7 +210,7 @@ export default function App() {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <PanGestureHandler
+        {/* <PanGestureHandler
           onGestureEvent={handlePan}
           onHandlerStateChange={handlePanStateChange}
         >
@@ -181,7 +221,11 @@ export default function App() {
                 transform: [{ translateX }, { translateY }],
               },
             ]}
-          >
+          > */}
+        {/* <View style={styles.topBar} /> */}
+        <StatusBar style="dark" />
+        <GestureDetector gesture={composedGesture}>
+          <Animated.View style={[styles.container, animatedStyles]}>
             <GestureDetector gesture={tapGesture}>
               <SafeAreaView style={styles.container}>
                 <View style={styles.container}>
@@ -202,7 +246,9 @@ export default function App() {
               </SafeAreaView>
             </GestureDetector>
           </Animated.View>
-        </PanGestureHandler>
+        </GestureDetector>
+        {/* </Animated.View>
+        </PanGestureHandler> */}
       </GestureHandlerRootView>
       {/* <Button title="Add Node" onPress={openModal} /> */}
     </>
@@ -214,8 +260,8 @@ const styles = StyleSheet.create({
     flex: 1,
 
     //delete for drawing on canvas
-    /*  backgroundColor: "white",
-    alignItems: "center",
+
+    /* alignItems: "center",
     justifyContent: "center", */
   },
   bottomContainer: {
@@ -233,5 +279,11 @@ const styles = StyleSheet.create({
   nodeForm: {
     flex: 1,
     marginTop: 100,
+  },
+  topBar: {
+    height: 50,
+    backgroundColor: "#6200EE",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
