@@ -1,9 +1,9 @@
-// NodeForm.js
+// AddNodeForm.js
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
-const NodeForm = ({ addAction, addCondition }) => {
+const AddNodeForm = ({ addAction, addCondition }) => {
   const [nodeType, setNodeType] = useState("Action");
   const [nodeName, setNodeName] = useState("");
   const [fromNode, setFromNode] = useState("");
@@ -147,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NodeForm;
+export default AddNodeForm;

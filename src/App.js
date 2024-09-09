@@ -1,5 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, Animated, Platform } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  Platform,
+  Button,
+  SafeAreaView,
+} from "react-native";
 import { usePanHandler } from "./usePanHandler";
 import CircleComponent from "./components/CircleComponent";
 import SquareComponent from "./components/SquareComponent";
@@ -28,9 +36,10 @@ import { Use } from "react-native-svg";
 import { useSharedValue } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
 import { WorkflowGraph } from "./WorkflowGraph";
-import NodeForm from "./components/NodeForm";
 import calculateCoordinates from "./calculateCoordinates";
 import WorkflowCanvas from "./components/WorkflowCanvas";
+import CustomModal from "./components/ModalForm";
+import AddNodeForm from "./components/AddNodeForm";
 
 const initializeWorkflow = () => {
   // Initialize the workflow graph
@@ -55,9 +64,12 @@ const initializeWorkflow = () => {
 
 export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
-  const [showNodeForm, setShowNodeForm] = useState(false);
   const [lines, setLines] = useState({});
   const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => setIsModalVisible(true);
+  const closeModal = () => setIsModalVisible(false);
 
   //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
@@ -72,17 +84,6 @@ export default function App() {
     fontWeight: "bold",
   };
   const font = matchFont(fontStyle);
-
-  /* const handleLineTouch = () => {
-    setCircles((prevCircles) => {
-      const distance = 100;
-      const lastCircle = prevCircles[prevCircles.length - 1];
-      const newId = lastCircle.id + 1;
-      const newCy = lastCircle.cy + distance;
-
-      return [...prevCircles, { id: newId, color: "blue", cx: 200, cy: newCy }];
-    });
-  };  */
 
   // Gesture handler for detecting tap on the line
   const tapGesture = useTapHandler(lines, 10, margins);
@@ -133,7 +134,7 @@ export default function App() {
         }
       }
     });
-    setShowNodeForm(false);
+    closeModal();
   };
 
   const addCondition = (fromNode, toNode, condition1, condition2) => {
@@ -159,7 +160,7 @@ export default function App() {
         }
       }
     });
-    setShowNodeForm(false);
+    closeModal();
   };
 
   // Print graph whenever it changes
@@ -167,20 +168,9 @@ export default function App() {
     workflow.printGraph();
   }, [workflow]);
 
-  const handleAddNodePress = () => {
-    setShowNodeForm(true);
-  };
-
   return (
     <>
-      {showNodeForm && (
-        <NodeForm
-          style={styles.nodeForm}
-          addAction={addAction}
-          addCondition={addCondition}
-        />
-      )}
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <PanGestureHandler
           onGestureEvent={handlePan}
           onHandlerStateChange={handlePanStateChange}
@@ -194,26 +184,27 @@ export default function App() {
             ]}
           >
             <GestureDetector gesture={tapGesture}>
-              <View style={styles.container}>
-                {!showNodeForm && (
-                  <>
-                    <WorkflowCanvas
-                      workflow={workflow}
-                      setLines={setLines}
-                      setMargins={setMargins}
+              <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
+                  <WorkflowCanvas
+                    workflow={workflow}
+                    setLines={setLines}
+                    setMargins={setMargins}
+                  />
+                  <CustomModal isVisible={isModalVisible} onClose={closeModal}>
+                    <AddNodeForm
+                      style={styles.nodeForm}
+                      addAction={addAction}
+                      addCondition={addCondition}
                     />
-                  </>
-                )}
-              </View>
+                  </CustomModal>
+                </View>
+              </SafeAreaView>
             </GestureDetector>
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.addNode} onPress={handleAddNodePress}>
-          Add Node
-        </Text>
-      </View>
+      <Button title="Add Node" onPress={openModal} />
     </>
   );
 }
