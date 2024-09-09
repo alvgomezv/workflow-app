@@ -84,16 +84,6 @@ export default function App() {
   const { translateX, translateY, handlePan, handlePanStateChange } =
     usePanHandler();
 
-  //All this to display the text, because a font is needed
-  const fontFamily = Platform.select({ ios: "Helvetica", default: "serif" });
-  const fontStyle = {
-    fontFamily,
-    fontSize: 14,
-    fontStyle: "italic",
-    fontWeight: "bold",
-  };
-  const font = matchFont(fontStyle);
-
   // Gesture handler for detecting tap on the line
   const tapGesture = useTapHandler(lines, 10, margins, setSelectedEdge);
 

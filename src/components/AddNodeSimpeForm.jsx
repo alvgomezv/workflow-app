@@ -57,6 +57,7 @@ const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
             style={styles.input}
             value={nodeName}
             onChangeText={setNodeName}
+            maxLength={12}
           />
         </>
       )}
@@ -67,12 +68,14 @@ const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
             style={styles.input}
             value={condition1}
             onChangeText={setCondition1}
+            maxLength={12}
           />
           <Text>Condition 2:</Text>
           <TextInput
             style={styles.input}
             value={condition2}
             onChangeText={setCondition2}
+            maxLength={12}
           />
         </>
       )}

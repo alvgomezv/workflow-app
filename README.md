@@ -30,7 +30,7 @@
 - [x] Function to paint paths from the bottom to the top of the shapes
 - [x] Make paths directional with an arrow
 - [x] Improve design of shapes
-- [ ] Text for shapes
+- [x] Text for shapes
 - [ ] (Extra) More advance function to paint paths starting and ending from specific places of shapes
 
 ### Edit and Delete shapes

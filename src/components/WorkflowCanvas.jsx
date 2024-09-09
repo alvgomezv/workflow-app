@@ -9,11 +9,17 @@ import {
   matchFont,
   Paint,
 } from "@shopify/react-native-skia";
-import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Dimensions,
+  Platform,
+} from "react-native";
 import calculateCoordinates from "./../calculateCoordinates";
 
 //make constants for the sizes of shapes
-const actionWidth = 100;
+const actionWidth = 130;
 const actionHeight = 70;
 const conditionWidth = 140;
 const conditionHeight = 100;
@@ -23,6 +29,17 @@ const arrowWidth = 12;
 
 let marginLeft = 0;
 let marginTop = 0;
+
+//All this to display the text, because a font is needed
+const fontFamily = Platform.select({
+  android: "Helvetica",
+  default: "sans-serif",
+});
+const fontStyle = {
+  fontFamily,
+  fontSize: 15,
+};
+const font = matchFont(fontStyle);
 
 const getNodeHeight = (nodeId) => {
   if (nodeId.startsWith("A")) {
@@ -142,7 +159,14 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
                 <Circle cx={x} cy={y} r={circleRadius} color="lightgreen">
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Circle>
-                <Tx text="I" y={y + 5} x={x - 5} font={null} />
+                {/* const x = canvasWidth / 2 - font.measureText(yourText).width / 2; 
+                    const y = canvasWidth / 2 + font.measureText(yourText).height / 2;  */}
+                <Tx
+                  text="Init"
+                  x={x - font.measureText("Init").width / 2}
+                  y={y + font.measureText("Init").height / 2}
+                  font={font}
+                />
               </React.Fragment>
             );
           case "Condition":
@@ -154,7 +178,12 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
                 >
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Path>
-                <Tx text={node.name} y={y} x={x - 20} font={null} />
+                <Tx
+                  text={node.name}
+                  x={x - font.measureText(node.name).width / 2}
+                  y={y + font.measureText(node.name).height / 2}
+                  font={font}
+                />
               </React.Fragment>
             );
           case "Action":
@@ -171,9 +200,9 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
                 </Rect>
                 <Tx
                   text={node.name}
-                  y={y}
-                  x={x - actionWidth / 2}
-                  font={null}
+                  x={x - font.measureText(node.name).width / 2}
+                  y={y + font.measureText(node.name).height / 2}
+                  font={font}
                 />
               </React.Fragment>
             );
@@ -183,7 +212,12 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
                 <Circle cx={x} cy={y} r={circleRadius} color="lightcoral">
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Circle>
-                <Tx text="E" y={y + 5} x={x - 5} font={null} />
+                <Tx
+                  text="End"
+                  x={x - font.measureText("End").width / 2}
+                  y={y + font.measureText("End").height / 2}
+                  font={font}
+                />
               </React.Fragment>
             );
           default:
