@@ -58,8 +58,8 @@
 - [x] Detect line that has been tapped
 - [x] Tap a line to create new components
 - [x] Zoom in an out the workflow view
+- [x] Reset initial view with spring animation
 - [ ] Tap the text of a shape to edit text
-- [ ] (Extra) Button to go back to Init node (center it)
 - [ ] (Extra) Tap long a shape to edit/delete shape
 
 ### Workflow Algorithms

@@ -3,12 +3,6 @@ import { Gesture } from "react-native-gesture-handler";
 const distanceToLine = (x, y, x1, y1, x2, y2, margins) => {
   const { marginTop, marginLeft } = margins;
 
-  // Adjust coordinates adding the margins (negative values)
-  x1 += marginLeft;
-  y1 += marginTop;
-  x2 += marginLeft;
-  y2 += marginTop;
-
   const A = x - x1;
   const B = y - y1;
   const C = x2 - x1;
@@ -38,13 +32,17 @@ const distanceToLine = (x, y, x1, y1, x2, y2, margins) => {
 
 export const useTapHandler = (
   lines,
-  threshold = 20,
+  threshold = 10,
   margins,
   setSelectedEdge
 ) => {
   const gesture = Gesture.Tap()
     .onEnd((event) => {
-      const { x, y } = event;
+      //extract the coordinates of the tap and subtract the margins
+      let { x, y } = event;
+      x -= margins.marginLeft;
+      y -= margins.marginTop;
+
       Object.entries(lines).forEach(([nodes, { x1, y1, x2, y2 }]) => {
         const [node1, node2] = nodes.split(",");
         /* if (node1 === "I" && node2 === "C1a") {

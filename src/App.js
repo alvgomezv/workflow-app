@@ -32,8 +32,10 @@ import { Use } from "react-native-svg";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { useTapHandler } from "./useTapHandler";
+import { useLongTapHandler } from "./useLongTapHandler";
 import { WorkflowGraph } from "./WorkflowGraph";
 import calculateCoordinates from "./calculateCoordinates";
 import WorkflowCanvas from "./components/WorkflowCanvas";
@@ -64,20 +66,29 @@ const initializeWorkflow = () => {
 
 export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
+  const [coordinates, setCoordinates] = useState({});
   const [lines, setLines] = useState({});
   const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLongTapModalVisible, setIsLongTapModalVisible] = useState(false);
   const [selectedEdge, setSelectedEdge] = useState(null);
+  const [longTapSelectedShape, setLongTapSelectedShape] = useState(null);
 
   //When selected edge changes, open the modal
   useEffect(() => {
     if (selectedEdge) {
-      openModal();
+      console.log("Selected Edge: ", selectedEdge);
+      openTapModal();
     }
-  }, [selectedEdge]);
+    if (longTapSelectedShape) {
+      openLongTapModal();
+    }
+  }, [selectedEdge, longTapSelectedShape]);
 
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
+  const openTapModal = () => setIsModalVisible(true);
+  const closeTapModal = () => setIsModalVisible(false);
+  const openLongTapModal = () => setIsLongTapModalVisible(true);
+  const closeLongTapModal = () => setIsLongTapModalVisible(false);
 
   // uses the old version of gestures for panning
   /* //Pan Gesture Handler for moving the canvas
@@ -93,10 +104,15 @@ export default function App() {
   const start = useSharedValue({ x: 0, y: 0 });
 
   // Animated styles for pinch-to-zoom and pan
-  const animatedStyles = useAnimatedStyle(() => {
+  const animatedStylesPinch = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const animatedStylesPan = useAnimatedStyle(() => {
     return {
       transform: [
-        { scale: scale.value },
         { translateX: translateX.value },
         { translateY: translateY.value },
       ],
@@ -105,7 +121,6 @@ export default function App() {
 
   // Pinch Gesture Handler for zooming in and out
   const pinchGesture = Gesture.Pinch().onUpdate((e) => {
-    console.log("pinch");
     scale.value = e.scale;
   });
 
@@ -119,13 +134,27 @@ export default function App() {
       translateY.value = e.translationY + start.value.y;
     });
 
-  // Combine pinch and pan gestures using Gesture.Race
-  const composedGesture = Gesture.Race(pinchGesture, panGesture);
+  /*  // Combine pinch and pan gestures using Gesture.Race
+  const composedGesture = Gesture.Race(pinchGesture, panGesture); */
+
+  // Function to reset the view to the start position
+  const resetView = () => {
+    scale.value = withSpring(1);
+    translateX.value = withSpring(0);
+    translateY.value = withSpring(0);
+  };
 
   //--------------------------------------------------------
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(lines, 10, margins, setSelectedEdge);
+  const tapGesture = useTapHandler(lines, 20, margins, setSelectedEdge);
+
+  // Long Tap Gesture Handler
+  const longTapGesture = useLongTapHandler(
+    coordinates,
+    margins,
+    setLongTapSelectedShape
+  );
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -173,7 +202,7 @@ export default function App() {
         }
       }
     });
-    closeModal();
+    closeTapModal();
   };
 
   const addCondition = (fromNode, toNode, condition1, condition2) => {
@@ -199,7 +228,7 @@ export default function App() {
         }
       }
     });
-    closeModal();
+    closeTapModal();
   };
 
   // Print graph whenever it changes
@@ -224,26 +253,42 @@ export default function App() {
           > */}
         {/* <View style={styles.topBar} /> */}
         <StatusBar style="light" backgroundColor="black" />
-        <GestureDetector gesture={composedGesture}>
-          <Animated.View style={[styles.container, animatedStyles]}>
-            <GestureDetector gesture={tapGesture}>
-              <SafeAreaView style={styles.container}>
-                <View style={styles.container}>
-                  <WorkflowCanvas
-                    workflow={workflow}
-                    setLines={setLines}
-                    setMargins={setMargins}
-                  />
-                  <CustomModal isVisible={isModalVisible} onClose={closeModal}>
-                    <AddNodeSimpleForm
-                      style={styles.nodeForm}
-                      addAction={addAction}
-                      addCondition={addCondition}
-                      selectedEdge={selectedEdge}
-                    />
-                  </CustomModal>
-                </View>
-              </SafeAreaView>
+        <GestureDetector gesture={pinchGesture}>
+          <Animated.View style={[styles.container, animatedStylesPinch]}>
+            <GestureDetector gesture={panGesture}>
+              <Animated.View style={[styles.container, animatedStylesPan]}>
+                <GestureDetector gesture={tapGesture}>
+                  <GestureDetector gesture={longTapGesture}>
+                    <SafeAreaView style={styles.container}>
+                      <View style={styles.container}>
+                        <WorkflowCanvas
+                          workflow={workflow}
+                          setCoordinates={setCoordinates}
+                          setLines={setLines}
+                          setMargins={setMargins}
+                        />
+                        <CustomModal
+                          isVisible={isModalVisible}
+                          onClose={closeTapModal}
+                        >
+                          <AddNodeSimpleForm
+                            style={styles.nodeForm}
+                            addAction={addAction}
+                            addCondition={addCondition}
+                            selectedEdge={selectedEdge}
+                          />
+                        </CustomModal>
+                        <CustomModal
+                          isVisible={isLongTapModalVisible}
+                          onClose={closeLongTapModal}
+                        >
+                          <Text>Long Tap Modal Content</Text>
+                        </CustomModal>
+                      </View>
+                    </SafeAreaView>
+                  </GestureDetector>
+                </GestureDetector>
+              </Animated.View>
             </GestureDetector>
           </Animated.View>
         </GestureDetector>
@@ -251,6 +296,7 @@ export default function App() {
         </PanGestureHandler> */}
       </GestureHandlerRootView>
       {/* <Button title="Add Node" onPress={openModal} /> */}
+      <Button title="Reset View" onPress={resetView} />
     </>
   );
 }

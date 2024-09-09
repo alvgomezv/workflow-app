@@ -52,7 +52,7 @@ const getNodeHeight = (nodeId) => {
   }
 };
 
-const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
+const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
   // Calculate the coordinates of the nodes and the size of the adjusted canvas
   const coordinates = calculateCoordinates(
     workflow,
@@ -61,6 +61,10 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins }) => {
     actionHeight,
     conditionHeight
   );
+
+  useEffect(() => {
+    setCoordinates(coordinates);
+  }, []);
 
   // Use effect
   useEffect(() => {
