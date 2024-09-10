@@ -34,16 +34,18 @@ export const useTapHandler = (
   lines,
   threshold = 10,
   margins,
-  setSelectedEdge
+  setSelectedEdge,
+  tapOffset
 ) => {
   const gesture = Gesture.Tap()
     .onEnd((event) => {
-      //extract the coordinates of the tap and subtract the margins
       let { x, y } = event;
-      x -= margins.marginLeft;
-      y -= margins.marginTop;
+      console.log(`Tap: (${x}, ${y})`);
 
-      console.log(`Tapped at (${x}, ${y})`);
+      tapOffset.value = { x, y };
+      //extract the coordinates of the tap and subtract the margins
+      /* x -= margins.marginLeft;
+      y -= margins.marginTop; */
 
       Object.entries(lines).forEach(([nodes, { x1, y1, x2, y2 }]) => {
         const [node1, node2] = nodes.split(",");

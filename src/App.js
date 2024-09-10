@@ -6,6 +6,7 @@ import {
   Platform,
   Button,
   SafeAreaView,
+  Dimensions,
 } from "react-native";
 import { usePanHandler } from "./usePanHandler";
 import {
@@ -27,6 +28,7 @@ import {
   Text as Tx,
   listFontFamilies,
   matchFont,
+  Offset,
 } from "@shopify/react-native-skia";
 import { Use } from "react-native-svg";
 import Animated, {
@@ -65,9 +67,27 @@ const initializeWorkflow = () => {
   return initialWorkflow;
 };
 
+//make constants for the sizes of shapes
+const actionWidth = 130;
+const actionHeight = 70;
+const conditionWidth = 140;
+const conditionHeight = 100;
+const circleRadius = 50;
+const arrowSize = 20;
+const arrowWidth = 12;
+const startMarginTop = 150;
+
 export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
-  const [coordinates, setCoordinates] = useState({});
+  const [coordinates, setCoordinates] = useState(
+    calculateCoordinates(
+      workflow,
+      actionWidth,
+      conditionWidth,
+      actionHeight,
+      conditionHeight
+    )
+  );
   const [lines, setLines] = useState({});
   const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -75,6 +95,32 @@ export default function App() {
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [longTapSelectedShape, setLongTapSelectedShape] = useState(null);
   const [EditNodeName, setEditNodeName] = useState(null);
+
+  useEffect(() => {
+    /* // Calculate the coordinates of the nodes and the size of the adjusted canvas
+    setCoordinates(
+      calculateCoordinates(
+        workflow,
+        actionWidth,
+        conditionWidth,
+        actionHeight,
+        conditionHeight
+      )
+    ); */
+
+    // Calculate the margins for the canvas
+    const initNode = Object.entries(coordinates.coord).find(
+      ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
+    );
+    const initX = initNode ? initNode[1].x : 0;
+    const initY = initNode ? initNode[1].y : 0;
+
+    const screenWidth = Dimensions.get("window").width;
+    const marginLeft = screenWidth / 2 - initX;
+    const marginTop = startMarginTop - initY;
+
+    setMargins({ marginTop, marginLeft });
+  }, [workflow]);
 
   //When selected edge changes, open the modal
   useEffect(() => {
@@ -102,38 +148,32 @@ export default function App() {
     setIsLongTapModalVisible(false);
     setLongTapSelectedShape(null);
   };
-  // uses the old version of gestures for panning
-  /* //Pan Gesture Handler for moving the canvas
-  const { translateX, translateY, handlePan, handlePanStateChange } =
-    usePanHandler(); */
 
-  //------- NEW PINCH-TO-ZOOM AND PAN GESTURES --------------
+  //------- NEW PINCH-TO-ZOOM, PAN GESTURES, TAP AND LONG TAP --------------
 
-  // Shared values for pinch-to-zoom and pan
+  // Shared values for gestures
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const start = useSharedValue({ x: 0, y: 0 });
+  const tapOffset = useSharedValue({ x: 0, y: 0 });
 
-  // Animated styles for pinch-to-zoom and pan
-  const animatedStylesPinch = useAnimatedStyle(() => {
+  // Animated styles for gestures
+  const animatedStyles = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
-    };
-  });
-
-  const animatedStylesPan = useAnimatedStyle(() => {
-    return {
+      // Coordinates for the canvas that change with the size of the workflow
+      width: coordinates.canvasWidth,
+      height: coordinates.canvasHeight,
+      // To center the canvas in the screen
+      position: "absolute",
+      left: margins.marginLeft,
+      top: margins.marginTop,
       transform: [
         { translateX: translateX.value },
         { translateY: translateY.value },
+        { scale: scale.value },
       ],
     };
-  });
-
-  // Pinch Gesture Handler for zooming in and out
-  const pinchGesture = Gesture.Pinch().onUpdate((e) => {
-    scale.value = e.scale;
   });
 
   // Pan Gesture Handler for moving the canvas
@@ -144,10 +184,39 @@ export default function App() {
     .onUpdate((e) => {
       translateX.value = e.translationX + start.value.x;
       translateY.value = e.translationY + start.value.y;
-    });
+    })
+    .runOnJS(true);
 
-  /*  // Combine pinch and pan gestures using Gesture.Race
-  const composedGesture = Gesture.Race(pinchGesture, panGesture); */
+  // Pinch Gesture Handler for zooming in and out
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate((e) => {
+      scale.value = e.scale;
+    })
+    .runOnJS(true);
+
+  // Tap Gesture Handler
+  const tapGesture = useTapHandler(
+    lines,
+    40,
+    margins,
+    setSelectedEdge,
+    tapOffset
+  );
+
+  // Long Tap Gesture Handler
+  const longTapGesture = useLongTapHandler(
+    coordinates,
+    margins,
+    setLongTapSelectedShape,
+    tapOffset
+  );
+
+  // Combine gestures
+  const composedGesture = Gesture.Race(
+    tapGesture,
+    longTapGesture,
+    Gesture.Simultaneous(panGesture, pinchGesture)
+  );
 
   // Function to reset the view to the start position
   const resetView = () => {
@@ -158,7 +227,8 @@ export default function App() {
 
   //--------------------------------------------------------
 
-  // Gesture handler for detecting tap on the line
+  // OLS GESTURES FOR TAP AND LONG TAP
+  /* // Gesture handler for detecting tap on the line
   const tapGesture = useTapHandler(lines, 40, margins, setSelectedEdge);
 
   // Long Tap Gesture Handler
@@ -166,7 +236,7 @@ export default function App() {
     coordinates,
     margins,
     setLongTapSelectedShape
-  );
+  ); */
 
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
@@ -174,6 +244,17 @@ export default function App() {
       const newWorkflow = new WorkflowGraph();
       Object.assign(newWorkflow, prevWorkflow);
       updateFn(newWorkflow);
+
+      // Recalculate coordinates after updating the workflow
+      const newCoordinates = calculateCoordinates(
+        newWorkflow,
+        actionWidth,
+        conditionWidth,
+        actionHeight,
+        conditionHeight
+      );
+      setCoordinates(newCoordinates);
+
       return newWorkflow;
     });
   };
@@ -261,67 +342,45 @@ export default function App() {
     console.log("Coordinates: ", coordinates);
   }, [coordinates]);
 
+  useEffect(() => {
+    console.log("---------------------- ");
+  }, []);
+
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        {/* <PanGestureHandler
-          onGestureEvent={handlePan}
-          onHandlerStateChange={handlePanStateChange}
-        >
-          <Animated.View
-            style={[
-              styles.container,
-              {
-                transform: [{ translateX }, { translateY }],
-              },
-            ]}
-          > */}
-        {/* <View style={styles.topBar} /> */}
         <StatusBar style="light" backgroundColor="black" />
-        <GestureDetector gesture={pinchGesture}>
-          <Animated.View style={[styles.container, animatedStylesPinch]}>
-            <GestureDetector gesture={panGesture}>
-              <Animated.View style={[styles.container, animatedStylesPan]}>
-                <GestureDetector gesture={tapGesture}>
-                  <GestureDetector gesture={longTapGesture}>
-                    <SafeAreaView style={styles.container}>
-                      <View style={styles.container}>
-                        <WorkflowCanvas
-                          workflow={workflow}
-                          setCoordinates={setCoordinates}
-                          setLines={setLines}
-                          setMargins={setMargins}
-                        />
-                        <CustomModal
-                          isVisible={isModalVisible}
-                          onClose={closeTapModal}
-                        >
-                          <AddNodeSimpleForm
-                            style={styles.AddNodeForm}
-                            addAction={addAction}
-                            addCondition={addCondition}
-                            selectedEdge={selectedEdge}
-                          />
-                        </CustomModal>
-                        <CustomModal
-                          isVisible={isLongTapModalVisible}
-                          onClose={closeLongTapModal}
-                        >
-                          <EditTextForm
-                            nodeName={EditNodeName}
-                            onSave={handleSaveNodeName}
-                          />
-                        </CustomModal>
-                      </View>
-                    </SafeAreaView>
-                  </GestureDetector>
-                </GestureDetector>
-              </Animated.View>
-            </GestureDetector>
+        <GestureDetector gesture={composedGesture}>
+          <Animated.View style={[animatedStyles]}>
+            <SafeAreaView style={styles.container}>
+              <View style={[styles.container]}>
+                <WorkflowCanvas
+                  workflow={workflow}
+                  coordinates={coordinates}
+                  setLines={setLines}
+                  setMargins={setMargins}
+                />
+                <CustomModal isVisible={isModalVisible} onClose={closeTapModal}>
+                  <AddNodeSimpleForm
+                    style={styles.AddNodeForm}
+                    addAction={addAction}
+                    addCondition={addCondition}
+                    selectedEdge={selectedEdge}
+                  />
+                </CustomModal>
+                <CustomModal
+                  isVisible={isLongTapModalVisible}
+                  onClose={closeLongTapModal}
+                >
+                  <EditTextForm
+                    nodeName={EditNodeName}
+                    onSave={handleSaveNodeName}
+                  />
+                </CustomModal>
+              </View>
+            </SafeAreaView>
           </Animated.View>
         </GestureDetector>
-        {/* </Animated.View>
-        </PanGestureHandler> */}
       </GestureHandlerRootView>
       {/* <Button title="Add Node" onPress={openModal} /> */}
       <Button title="Reset View" onPress={resetView} />
@@ -332,7 +391,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     //delete for drawing on canvas
 
     /* alignItems: "center",

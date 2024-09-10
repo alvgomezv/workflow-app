@@ -43,15 +43,18 @@ const isPointInShape = (nodeId, px, py, x, y) => {
 export const useLongTapHandler = (
   coordinates,
   margins,
-  setLongTapSelectedShape
+  setLongTapSelectedShape,
+  tapOffset
 ) => {
   const gesture = Gesture.LongPress()
     .minDuration(300)
     .onEnd((event) => {
-      //extract the coordinates of the tap and subtract the margins
       let { x, y } = event;
-      x -= margins.marginLeft;
-      y -= margins.marginTop;
+      tapOffset.value = { x, y };
+      //extract the coordinates of the tap and subtract the margins
+      /* x -= margins.marginLeft;
+      y -= margins.marginTop; */
+
       Object.entries(coordinates.coord).forEach(
         ([nodeId, { x: nodeX, y: nodeY }]) => {
           if (isPointInShape(nodeId, x, y, nodeX, nodeY)) {

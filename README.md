@@ -35,7 +35,7 @@
 
 ### Edit and Delete shapes
 
-- [ ] Make the text of the shapes editable
+- [x] Make the text of the shapes editable
 - [ ] Delete shapes with a form
 - [ ] (Extra) Edit shapes, changing them from action to condition and condition to action
 
