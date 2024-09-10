@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from "react-native";
-import { usePanHandler } from "./usePanHandler";
+import { usePanHandler } from "./utils/usePanHandler";
 import {
   PinchGestureHandler,
   GestureHandlerRootView,
@@ -19,7 +19,7 @@ import {
   GestureDetector,
 } from "react-native-gesture-handler";
 import React, { useEffect, useRef, useState } from "react";
-import ConnectingLine from "./components/ConnectingLine";
+import ConnectingLine from "../components/ConnectingLine";
 import {
   Canvas,
   Path,
@@ -36,15 +36,15 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useTapHandler } from "./useTapHandler";
-import { useLongTapHandler } from "./useLongTapHandler";
-import { WorkflowGraph } from "./WorkflowGraph";
-import calculateCoordinates from "./calculateCoordinates";
-import WorkflowCanvas from "./components/WorkflowCanvas";
-import CustomModal from "./components/ModalForm";
-import AddNodeForm from "./components/AddNodeForm";
-import AddNodeSimpleForm from "./components/AddNodeSimpeForm";
-import EditTextForm from "./components/EditTextForm";
+import { useTapHandler } from "./utils/useTapHandler";
+import { useLongTapHandler } from "./utils/useLongTapHandler";
+import { WorkflowGraph } from "./utils/WorkflowGraph";
+import calculateCoordinates from "./utils/calculateCoordinates";
+import WorkflowCanvas from "../components/WorkflowCanvas";
+import CustomModal from "../components/ModalForm";
+import AddNodeForm from "../components/AddNodeForm";
+import AddNodeSimpleForm from "../components/AddNodeSimpeForm";
+import EditTextForm from "../components/EditTextForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initializeWorkflow = () => {
@@ -76,7 +76,7 @@ const conditionHeight = 100;
 const circleRadius = 50;
 const arrowSize = 20;
 const arrowWidth = 12;
-const startMarginTop = 150;
+const startMarginTop = 100;
 const STORAGE_KEY = "workflow_data";
 
 export default function App() {
