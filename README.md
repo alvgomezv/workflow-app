@@ -59,7 +59,7 @@
 - [x] Tap a line to create new components
 - [x] Zoom in an out the workflow view
 - [x] Reset initial view with spring animation
-- [ ] Tap the text of a shape to edit text
+- [x] Tap long a shape to edit its text
 - [ ] (Extra) Tap long a shape to edit/delete shape
 
 ### Workflow Algorithms

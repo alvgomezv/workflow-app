@@ -42,6 +42,7 @@ import WorkflowCanvas from "./components/WorkflowCanvas";
 import CustomModal from "./components/ModalForm";
 import AddNodeForm from "./components/AddNodeForm";
 import AddNodeSimpleForm from "./components/AddNodeSimpeForm";
+import EditTextForm from "./components/EditTextForm";
 
 const initializeWorkflow = () => {
   // Initialize the workflow graph
@@ -73,6 +74,7 @@ export default function App() {
   const [isLongTapModalVisible, setIsLongTapModalVisible] = useState(false);
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [longTapSelectedShape, setLongTapSelectedShape] = useState(null);
+  const [EditNodeName, setEditNodeName] = useState(null);
 
   //When selected edge changes, open the modal
   useEffect(() => {
@@ -80,16 +82,26 @@ export default function App() {
       console.log("Selected Edge: ", selectedEdge);
       openTapModal();
     }
+  }, [selectedEdge]);
+
+  useEffect(() => {
     if (longTapSelectedShape) {
+      console.log("Long Tap Selected Shape: ", longTapSelectedShape);
+      setEditNodeName(workflow.adjacencyList[longTapSelectedShape].name);
       openLongTapModal();
     }
-  }, [selectedEdge, longTapSelectedShape]);
+  }, [longTapSelectedShape]);
 
   const openTapModal = () => setIsModalVisible(true);
-  const closeTapModal = () => setIsModalVisible(false);
+  const closeTapModal = () => {
+    setIsModalVisible(false);
+    setSelectedEdge(null);
+  };
   const openLongTapModal = () => setIsLongTapModalVisible(true);
-  const closeLongTapModal = () => setIsLongTapModalVisible(false);
-
+  const closeLongTapModal = () => {
+    setIsLongTapModalVisible(false);
+    setLongTapSelectedShape(null);
+  };
   // uses the old version of gestures for panning
   /* //Pan Gesture Handler for moving the canvas
   const { translateX, translateY, handlePan, handlePanStateChange } =
@@ -147,7 +159,7 @@ export default function App() {
   //--------------------------------------------------------
 
   // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(lines, 20, margins, setSelectedEdge);
+  const tapGesture = useTapHandler(lines, 40, margins, setSelectedEdge);
 
   // Long Tap Gesture Handler
   const longTapGesture = useLongTapHandler(
@@ -231,10 +243,23 @@ export default function App() {
     closeTapModal();
   };
 
+  //Edit the text of a shape
+  const handleSaveNodeName = (newName) => {
+    updateWorkflow((workflow) => {
+      workflow.updateNodeName(longTapSelectedShape, newName);
+    });
+    setIsLongTapModalVisible(false);
+  };
+
   // Print graph whenever it changes
   useEffect(() => {
     workflow.printGraph();
   }, [workflow]);
+
+  // print coordinates whenever they change
+  useEffect(() => {
+    console.log("Coordinates: ", coordinates);
+  }, [coordinates]);
 
   return (
     <>
@@ -272,7 +297,7 @@ export default function App() {
                           onClose={closeTapModal}
                         >
                           <AddNodeSimpleForm
-                            style={styles.nodeForm}
+                            style={styles.AddNodeForm}
                             addAction={addAction}
                             addCondition={addCondition}
                             selectedEdge={selectedEdge}
@@ -282,7 +307,10 @@ export default function App() {
                           isVisible={isLongTapModalVisible}
                           onClose={closeLongTapModal}
                         >
-                          <Text>Long Tap Modal Content</Text>
+                          <EditTextForm
+                            nodeName={EditNodeName}
+                            onSave={handleSaveNodeName}
+                          />
                         </CustomModal>
                       </View>
                     </SafeAreaView>
@@ -322,7 +350,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  nodeForm: {
+  AddNodeForm: {
     flex: 1,
     marginTop: 100,
   },

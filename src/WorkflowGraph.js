@@ -79,6 +79,14 @@ class WorkflowGraph {
     return true;
   }
 
+  updateNodeName(id, newName) {
+    if (this.adjacencyList[id]) {
+      this.adjacencyList[id].name = newName;
+    } else {
+      console.error(`Node with id ${id} does not exist.`);
+    }
+  }
+
   printGraph() {
     let endNode = null;
     for (let nodeId in this.adjacencyList) {

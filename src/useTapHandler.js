@@ -43,6 +43,8 @@ export const useTapHandler = (
       x -= margins.marginLeft;
       y -= margins.marginTop;
 
+      console.log(`Tapped at (${x}, ${y})`);
+
       Object.entries(lines).forEach(([nodes, { x1, y1, x2, y2 }]) => {
         const [node1, node2] = nodes.split(",");
         /* if (node1 === "I" && node2 === "C1a") {

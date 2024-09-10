@@ -20,11 +20,13 @@ const isPointInRhombus = (px, py, cx, cy, width, height) => {
 
 // Function to check if the tapped point is inside the shape
 const isPointInShape = (nodeId, px, py, x, y) => {
-  if (nodeId.startsWith("I") || nodeId.startsWith("E")) {
+  // No need to check for the shape if the node is a start or end node
+  /* if (nodeId.startsWith("I") || nodeId.startsWith("E")) {
     // Circle
     const radius = 50; // ------------------------PONER EN GLOBALESSSS!!
-    return isPointInCircle(px, py, x, y, radius);
-  } else if (nodeId.startsWith("A")) {
+    return isPointInCircle(px, py, x, y, radius); 
+  }*/
+  if (nodeId.startsWith("A")) {
     // Rectangle
     const x1 = x - 130 / 2;
     const y1 = y - 70 / 2;
@@ -44,6 +46,7 @@ export const useLongTapHandler = (
   setLongTapSelectedShape
 ) => {
   const gesture = Gesture.LongPress()
+    .minDuration(300)
     .onEnd((event) => {
       //extract the coordinates of the tap and subtract the margins
       let { x, y } = event;

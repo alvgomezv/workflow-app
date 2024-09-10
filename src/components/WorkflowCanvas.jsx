@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Canvas,
   Path,
@@ -53,8 +53,7 @@ const getNodeHeight = (nodeId) => {
 };
 
 const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
-  // Calculate the coordinates of the nodes and the size of the adjusted canvas
-  const coordinates = calculateCoordinates(
+  const newCoordinates = calculateCoordinates(
     workflow,
     actionWidth,
     conditionWidth,
@@ -63,18 +62,27 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
   );
 
   useEffect(() => {
-    setCoordinates(coordinates);
-  }, []);
+    // Calculate the coordinates of the nodes and the size of the adjusted canvas
+    setCoordinates(
+      calculateCoordinates(
+        workflow,
+        actionWidth,
+        conditionWidth,
+        actionHeight,
+        conditionHeight
+      )
+    );
+  }, [workflow]);
 
   // Use effect
   useEffect(() => {
     // Record the lines (paths) between shapes, to paint on the canvas
     const newLines = {};
-    Object.entries(coordinates.coord).forEach(([nodeId, { x, y }]) => {
+    Object.entries(newCoordinates.coord).forEach(([nodeId, { x, y }]) => {
       const node = workflow.adjacencyList[nodeId];
       const nodeHeight = getNodeHeight(nodeId);
       node.neighbors.map((neighborId) => {
-        const { x: nx, y: ny } = coordinates.coord[neighborId];
+        const { x: nx, y: ny } = newCoordinates.coord[neighborId];
         const neighborHeight = getNodeHeight(neighborId);
         newLines[[nodeId, neighborId]] = {
           x1: x,
@@ -87,7 +95,7 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
     setLines(newLines);
 
     // Center the canvas with the Init node at the center horizontally and 100 from the top
-    const initNode = Object.entries(coordinates.coord).find(
+    const initNode = Object.entries(newCoordinates.coord).find(
       ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
     );
     const initX = initNode ? initNode[1].x : 0;
@@ -103,18 +111,18 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
   return (
     <Canvas
       style={{
-        width: coordinates.canvasWidth,
-        height: coordinates.canvasHeight,
+        width: newCoordinates.canvasWidth,
+        height: newCoordinates.canvasHeight,
         marginLeft,
         marginTop,
       }}
     >
       {/* // Paint the lines between shapes */}
-      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
+      {Object.entries(newCoordinates.coord).map(([nodeId, { x, y }]) => {
         const node = workflow.adjacencyList[nodeId];
         const nodeHeight = getNodeHeight(nodeId);
         return node.neighbors.map((neighborId) => {
-          const { x: nx, y: ny } = coordinates.coord[neighborId];
+          const { x: nx, y: ny } = newCoordinates.coord[neighborId];
           const neighborHeight = getNodeHeight(neighborId);
 
           // Calculate the direction of the line
@@ -155,7 +163,7 @@ const WorkflowCanvas = ({ workflow, setLines, setMargins, setCoordinates }) => {
         });
       })}
       {/* // Paint the shapes */}
-      {Object.entries(coordinates.coord).map(([nodeId, { x, y }]) => {
+      {Object.entries(newCoordinates.coord).map(([nodeId, { x, y }]) => {
         const node = workflow.adjacencyList[nodeId];
         switch (node.type) {
           case "Init":
