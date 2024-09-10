@@ -51,7 +51,7 @@ const getNodeHeight = (nodeId) => {
   }
 };
 
-const WorkflowCanvas = ({ workflow, setLines, setMargins, coordinates }) => {
+const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
   // Use effect
   useEffect(() => {
     // Record the lines (paths) between shapes, to paint on the canvas

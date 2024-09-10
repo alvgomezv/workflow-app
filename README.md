@@ -78,7 +78,7 @@
 
 ### Session Management
 
-- [ ] Save workflow when closing the app
+- [x] Save workflow when closing the app
 - [ ] Saving all the workflows when closing the app
 
 ### Animations

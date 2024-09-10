@@ -45,6 +45,7 @@ import CustomModal from "./components/ModalForm";
 import AddNodeForm from "./components/AddNodeForm";
 import AddNodeSimpleForm from "./components/AddNodeSimpeForm";
 import EditTextForm from "./components/EditTextForm";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const initializeWorkflow = () => {
   // Initialize the workflow graph
@@ -76,6 +77,7 @@ const circleRadius = 50;
 const arrowSize = 20;
 const arrowWidth = 12;
 const startMarginTop = 150;
+const STORAGE_KEY = "workflow_data";
 
 export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
@@ -95,6 +97,60 @@ export default function App() {
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [longTapSelectedShape, setLongTapSelectedShape] = useState(null);
   const [EditNodeName, setEditNodeName] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // ----- LOAD AND SAVE WORKFLOW DATA -----
+
+  useEffect(() => {
+    const loadWorkflow = async () => {
+      try {
+        const savedWorkflow = await AsyncStorage.getItem(STORAGE_KEY);
+        if (savedWorkflow) {
+          const parsedWorkflow = WorkflowGraph.fromJSON(
+            JSON.parse(savedWorkflow)
+          );
+          setWorkflow(parsedWorkflow);
+          console.log("New Workflow: ", parsedWorkflow);
+          // Calculate the coordinates in another useEffect that depends on the workflow
+
+          console.log("Loaded workflow data");
+          setCoordinates(
+            calculateCoordinates(
+              parsedWorkflow,
+              actionWidth,
+              conditionWidth,
+              actionHeight,
+              conditionHeight
+            )
+          );
+          console.log("New Coordinates: ", coordinates);
+
+          // Set loading to false after coordinates are calculated
+          setIsLoading(false);
+          console.log("Loading: ", isLoading);
+        }
+      } catch (error) {
+        console.error("Failed to load workflow data:", error);
+      }
+    };
+
+    loadWorkflow();
+  }, []);
+
+  useEffect(() => {
+    const saveWorkflow = async () => {
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(workflow));
+        console.log("Saved workflow data");
+      } catch (error) {
+        console.error("Failed to save workflow data:", error);
+      }
+    };
+
+    saveWorkflow();
+  }, [workflow]);
+
+  // -------------------------------------
 
   useEffect(() => {
     /* // Calculate the coordinates of the nodes and the size of the adjusted canvas
@@ -332,7 +388,7 @@ export default function App() {
     setIsLongTapModalVisible(false);
   };
 
-  // Print graph whenever it changes
+  /* // Print graph whenever it changes
   useEffect(() => {
     workflow.printGraph();
   }, [workflow]);
@@ -344,7 +400,7 @@ export default function App() {
 
   useEffect(() => {
     console.log("---------------------- ");
-  }, []);
+  }, []); */
 
   return (
     <>
@@ -354,12 +410,15 @@ export default function App() {
           <Animated.View style={[animatedStyles]}>
             <SafeAreaView style={styles.container}>
               <View style={[styles.container]}>
-                <WorkflowCanvas
-                  workflow={workflow}
-                  coordinates={coordinates}
-                  setLines={setLines}
-                  setMargins={setMargins}
-                />
+                {isLoading ? (
+                  <Text>Loading...</Text>
+                ) : (
+                  <WorkflowCanvas
+                    workflow={workflow}
+                    coordinates={coordinates}
+                    setLines={setLines}
+                  />
+                )}
                 <CustomModal isVisible={isModalVisible} onClose={closeTapModal}>
                   <AddNodeSimpleForm
                     style={styles.AddNodeForm}

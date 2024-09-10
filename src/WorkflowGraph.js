@@ -102,6 +102,13 @@ class WorkflowGraph {
     }
     console.log("----");
   }
+
+  // Serialize the graph to JSON for saving it
+  static fromJSON(json) {
+    const workflow = new WorkflowGraph();
+    Object.assign(workflow, json);
+    return workflow;
+  }
 }
 
 export { WorkflowGraph };
