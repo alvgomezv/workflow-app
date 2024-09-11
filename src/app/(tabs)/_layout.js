@@ -3,14 +3,14 @@ import { Tabs } from "expo-router";
 const TabsLayout = () => {
   return (
     <Tabs>
-      <Tabs.Screen
+      {/*   <Tabs.Screen
         name="index"
         options={{
           headerTitle: "Home",
           title: "Home",
           headerTitleAlign: "center",
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="workflows/[id]"
         options={{
@@ -19,6 +19,7 @@ const TabsLayout = () => {
           headerTitleAlign: "center",
         }}
       />
+      {/* Create a link back, to the home page */}
     </Tabs>
   );
 };

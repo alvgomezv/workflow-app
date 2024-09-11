@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from "react-native";
-import { usePanHandler } from "../utils/usePanHandler";
+import { usePanHandler } from "./utils/usePanHandler";
 import {
   PinchGestureHandler,
   GestureHandlerRootView,
@@ -19,7 +19,6 @@ import {
   GestureDetector,
 } from "react-native-gesture-handler";
 import React, { useEffect, useRef, useState } from "react";
-import ConnectingLine from "../../components/ConnectingLine";
 import {
   Canvas,
   Path,
@@ -36,59 +35,34 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useTapHandler } from "../utils/useTapHandler";
-import { useLongTapHandler } from "../utils/useLongTapHandler";
-import { WorkflowGraph } from "../utils/WorkflowGraph";
-import calculateCoordinates from "../utils/calculateCoordinates";
-import WorkflowCanvas from "../../components/WorkflowCanvas";
-import CustomModal from "../../components/ModalForm";
-import AddNodeForm from "../../components/AddNodeForm";
-import AddNodeSimpleForm from "../../components/AddNodeSimpeForm";
-import EditTextForm from "../../components/EditTextForm";
+import { useTapHandler } from "./utils/useTapHandler";
+import { useLongTapHandler } from "./utils/useLongTapHandler";
+import { WorkflowGraph } from "./utils/WorkflowGraph";
+import calculateCoordinates from "./utils/calculateCoordinates";
+import WorkflowCanvas from "../components/WorkflowCanvas";
+import CustomModal from "../components/ModalForm";
+import AddNodeForm from "../components/AddNodeForm";
+import AddNodeSimpleForm from "../components/AddNodeSimpeForm";
+import EditTextForm from "../components/EditTextForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const initializeWorkflow = () => {
-  // Initialize the workflow graph
-  const initialWorkflow = new WorkflowGraph();
-
-  // Add nodes
-  initialWorkflow.addNode("I", "Init", "InitNode");
-  initialWorkflow.addNode("C1a", "Condition", "Condition 1");
-  initialWorkflow.addNode("C1b", "Condition", "Condition 2");
-  initialWorkflow.addNode("A1", "Action", "Action 1");
-  initialWorkflow.addNode("E", "End", "EndNode");
-
-  // Add edges
-  initialWorkflow.addEdge("I", "C1a");
-  initialWorkflow.addEdge("I", "C1b");
-  initialWorkflow.addEdge("C1a", "E");
-  initialWorkflow.addEdge("C1b", "A1");
-  initialWorkflow.addEdge("A1", "E");
-
-  return initialWorkflow;
-};
-
-//make constants for the sizes of shapes
-const actionWidth = 130;
-const actionHeight = 70;
-const conditionWidth = 140;
-const conditionHeight = 100;
-const circleRadius = 50;
-const arrowSize = 20;
-const arrowWidth = 12;
-const startMarginTop = 100;
-const STORAGE_KEY = "workflow_data";
+import { Link } from "expo-router";
+import {
+  ACTION_WIDTH,
+  ACTION_HEIGHT,
+  CONDITION_WIDTH,
+  CONDITION_HEIGHT,
+  START_MARGIN_TOP,
+  STORAGE_KEY,
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+} from "../config/constants";
+import initializeWorkflow from "./utils/utils";
+import { loadWorkflow, saveWorkflow } from "./utils/stateManagement";
 
 export default function App() {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
   const [coordinates, setCoordinates] = useState(
-    calculateCoordinates(
-      workflow,
-      actionWidth,
-      conditionWidth,
-      actionHeight,
-      conditionHeight
-    )
+    calculateCoordinates(workflow)
   );
   const [lines, setLines] = useState({});
   const [margins, setMargins] = useState({ marginTop: 0, marginLeft: 0 });
@@ -102,93 +76,43 @@ export default function App() {
   // ----- LOAD AND SAVE WORKFLOW DATA -----
 
   useEffect(() => {
-    const loadWorkflow = async () => {
-      try {
-        const savedWorkflow = await AsyncStorage.getItem(STORAGE_KEY);
-        if (savedWorkflow) {
-          const parsedWorkflow = WorkflowGraph.fromJSON(
-            JSON.parse(savedWorkflow)
-          );
-          setWorkflow(parsedWorkflow);
-          console.log("New Workflow: ", parsedWorkflow);
-          // Calculate the coordinates in another useEffect that depends on the workflow
-
-          console.log("Loaded workflow data");
-          setCoordinates(
-            calculateCoordinates(
-              parsedWorkflow,
-              actionWidth,
-              conditionWidth,
-              actionHeight,
-              conditionHeight
-            )
-          );
-          console.log("New Coordinates: ", coordinates);
-
-          // Set loading to false after coordinates are calculated
-          setIsLoading(false);
-          console.log("Loading: ", isLoading);
-        }
-      } catch (error) {
-        console.error("Failed to load workflow data:", error);
-      }
-    };
-
-    loadWorkflow();
+    loadWorkflow(setWorkflow, setCoordinates, setIsLoading);
   }, []);
 
   useEffect(() => {
-    const saveWorkflow = async () => {
-      try {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(workflow));
-        console.log("Saved workflow data");
-      } catch (error) {
-        console.error("Failed to save workflow data:", error);
-      }
-    };
-
-    saveWorkflow();
+    saveWorkflow(workflow);
   }, [workflow]);
 
   // -------------------------------------
 
   useEffect(() => {
-    /* // Calculate the coordinates of the nodes and the size of the adjusted canvas
-    setCoordinates(
-      calculateCoordinates(
-        workflow,
-        actionWidth,
-        conditionWidth,
-        actionHeight,
-        conditionHeight
-      )
+    /* // Calculate the coordinates of the nodes 
+    setCoordinates(calculateCoordinates(workflow)
     ); */
 
-    // Calculate the margins for the canvas
+    // Calculate the margins for the canvas to center it
     const initNode = Object.entries(coordinates.coord).find(
       ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
     );
     const initX = initNode ? initNode[1].x : 0;
     const initY = initNode ? initNode[1].y : 0;
 
-    const screenWidth = Dimensions.get("window").width;
-    const marginLeft = screenWidth / 2 - initX;
-    const marginTop = startMarginTop - initY;
+    const marginLeft = SCREEN_WIDTH / 2 - initX;
+    const marginTop = START_MARGIN_TOP - initY;
 
     setMargins({ marginTop, marginLeft });
   }, [workflow]);
 
-  //When selected edge changes, open the modal
+  // When selected edge changes, open the Add Node modal
   useEffect(() => {
     if (selectedEdge) {
-      console.log("Selected Edge: ", selectedEdge);
       openTapModal();
     }
   }, [selectedEdge]);
 
+  // When selected shape changes, open the Edit Node Name modal
   useEffect(() => {
     if (longTapSelectedShape) {
-      console.log("Long Tap Selected Shape: ", longTapSelectedShape);
       setEditNodeName(workflow.adjacencyList[longTapSelectedShape].name);
       openLongTapModal();
     }
@@ -225,13 +149,27 @@ export default function App() {
       left: margins.marginLeft,
       top: margins.marginTop,
       transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
+        { translateX: withSpring(translateX.value) },
+        { translateY: withSpring(translateY.value) },
         { scale: scale.value },
       ],
     };
   });
 
+  /*  // Function to calculate boundaries based on scale
+  const calculateBoundaries = (scaleValue) => {
+    const scaledCanvasWidth = coordinates.canvasWidth * scaleValue;
+    const scaledCanvasHeight = coordinates.canvasHeight * scaleValue;
+
+    // Define boundaries (Percentage of the screen)
+    const BOUNDARY_LEFT = (scaledCanvasWidth - SCREEN_WIDTH) * -2;
+    const BOUNDARY_TOP = (scaledCanvasHeight - SCREEN_HEIGHT) * -2;
+    const BOUNDARY_RIGHT = (scaledCanvasWidth - SCREEN_WIDTH) * 2;
+    const BOUNDARY_BOTTOM = (scaledCanvasHeight - SCREEN_HEIGHT) * 3;
+
+    return { BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_RIGHT, BOUNDARY_BOTTOM };
+  };
+ */
   // Pan Gesture Handler for moving the canvas
   const panGesture = Gesture.Pan()
     .onStart(() => {
@@ -241,6 +179,20 @@ export default function App() {
       translateX.value = e.translationX + start.value.x;
       translateY.value = e.translationY + start.value.y;
     })
+    /* .onEnd(() => {
+      const { BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_RIGHT, BOUNDARY_BOTTOM } =
+        calculateBoundaries(scale.value);
+
+      // Ensure within boundaries
+      translateX.value = Math.max(
+        BOUNDARY_LEFT,
+        Math.min(translateX.value, BOUNDARY_RIGHT)
+      );
+      translateY.value = Math.max(
+        BOUNDARY_TOP,
+        Math.min(translateY.value, BOUNDARY_BOTTOM)
+      );
+    }) */
     .runOnJS(true);
 
   // Pinch Gesture Handler for zooming in and out
@@ -283,17 +235,6 @@ export default function App() {
 
   //--------------------------------------------------------
 
-  // OLS GESTURES FOR TAP AND LONG TAP
-  /* // Gesture handler for detecting tap on the line
-  const tapGesture = useTapHandler(lines, 40, margins, setSelectedEdge);
-
-  // Long Tap Gesture Handler
-  const longTapGesture = useLongTapHandler(
-    coordinates,
-    margins,
-    setLongTapSelectedShape
-  ); */
-
   // Function to update the workflow graph
   const updateWorkflow = (updateFn) => {
     setWorkflow((prevWorkflow) => {
@@ -302,13 +243,7 @@ export default function App() {
       updateFn(newWorkflow);
 
       // Recalculate coordinates after updating the workflow
-      const newCoordinates = calculateCoordinates(
-        newWorkflow,
-        actionWidth,
-        conditionWidth,
-        actionHeight,
-        conditionHeight
-      );
+      const newCoordinates = calculateCoordinates(newWorkflow);
       setCoordinates(newCoordinates);
 
       return newWorkflow;
@@ -443,6 +378,9 @@ export default function App() {
       </GestureHandlerRootView>
       {/* <Button title="Add Node" onPress={openModal} /> */}
       <Button title="Reset View" onPress={resetView} />
+      <Link href={`/workflows/[id]`} params={{ id: "1" }}>
+        workflow
+      </Link>
     </>
   );
 }

@@ -16,16 +16,16 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-
-//make constants for the sizes of shapes
-const actionWidth = 130;
-const actionHeight = 70;
-const conditionWidth = 140;
-const conditionHeight = 100;
-const circleRadius = 50;
-const arrowSize = 20;
-const arrowWidth = 12;
-const startMarginTop = 150;
+import {
+  ACTION_WIDTH,
+  ACTION_HEIGHT,
+  CONDITION_WIDTH,
+  CONDITION_HEIGHT,
+  CIRCLE_RADIUS,
+  ARROW_SIZE,
+  ARROW_WIDTH,
+  START_MARGIN_TOP,
+} from "../config/constants";
 
 let marginLeft = 0;
 let marginTop = 0;
@@ -43,11 +43,11 @@ const font = matchFont(fontStyle);
 
 const getNodeHeight = (nodeId) => {
   if (nodeId.startsWith("A")) {
-    return actionHeight;
+    return ACTION_HEIGHT;
   } else if (nodeId.startsWith("C")) {
-    return conditionHeight;
+    return CONDITION_HEIGHT;
   } else {
-    return circleRadius * 2;
+    return CIRCLE_RADIUS * 2;
   }
 };
 
@@ -79,9 +79,9 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
     const initX = initNode ? initNode[1].x : 0;
     const initY = initNode ? initNode[1].y : 0;
 
-    const screenWidth = Dimensions.get("window").width;
-    marginLeft = screenWidth / 2 - initX;
-    marginTop = startMarginTop - initY;
+    const SCREEN_WIDTH = Dimensions.get("window").width;
+    marginLeft = SCREEN_WIDTH / 2 - initX;
+    marginTop = START_MARGIN_TOP - initY;
 
     setMargins({ marginTop, marginLeft }); */
   }, [workflow]);
@@ -111,17 +111,17 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
 
           // Calculate the points for the arrowhead
           const arrowX1 =
-            nx - arrowSize * Math.cos(angle - Math.PI / arrowWidth);
+            nx - ARROW_SIZE * Math.cos(angle - Math.PI / ARROW_WIDTH);
           const arrowY1 =
             ny -
             neighborHeight / 2 -
-            arrowSize * Math.sin(angle - Math.PI / arrowWidth);
+            ARROW_SIZE * Math.sin(angle - Math.PI / ARROW_WIDTH);
           const arrowX2 =
-            nx - arrowSize * Math.cos(angle + Math.PI / arrowWidth);
+            nx - ARROW_SIZE * Math.cos(angle + Math.PI / ARROW_WIDTH);
           const arrowY2 =
             ny -
             neighborHeight / 2 -
-            arrowSize * Math.sin(angle + Math.PI / arrowWidth);
+            ARROW_SIZE * Math.sin(angle + Math.PI / ARROW_WIDTH);
 
           return (
             <React.Fragment key={`${nodeId}-${neighborId}`}>
@@ -147,7 +147,7 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
           case "Init":
             return (
               <React.Fragment key={nodeId}>
-                <Circle cx={x} cy={y} r={circleRadius} color="lightgreen">
+                <Circle cx={x} cy={y} r={CIRCLE_RADIUS} color="lightgreen">
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Circle>
                 {/* const x = canvasWidth / 2 - font.measureText(yourText).width / 2; 
@@ -164,7 +164,7 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
             return (
               <React.Fragment key={nodeId}>
                 <Path
-                  path={`M ${x} ${y - conditionHeight / 2} L ${x + conditionWidth / 2} ${y} L ${x} ${y + conditionHeight / 2} L ${x - conditionWidth / 2} ${y} Z`}
+                  path={`M ${x} ${y - CONDITION_HEIGHT / 2} L ${x + CONDITION_WIDTH / 2} ${y} L ${x} ${y + CONDITION_HEIGHT / 2} L ${x - CONDITION_WIDTH / 2} ${y} Z`}
                   color="#58D4FA"
                 >
                   <Paint color="#black" style="stroke" strokeWidth={2} />
@@ -181,10 +181,10 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
             return (
               <React.Fragment key={nodeId}>
                 <Rect
-                  x={x - actionWidth / 2}
-                  y={y - actionHeight / 2}
-                  width={actionWidth}
-                  height={actionHeight}
+                  x={x - ACTION_WIDTH / 2}
+                  y={y - ACTION_HEIGHT / 2}
+                  width={ACTION_WIDTH}
+                  height={ACTION_HEIGHT}
                   color="#FAFA58"
                 >
                   <Paint color="#black" style="stroke" strokeWidth={2} />
@@ -200,7 +200,7 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
           case "End":
             return (
               <React.Fragment key={nodeId}>
-                <Circle cx={x} cy={y} r={circleRadius} color="lightcoral">
+                <Circle cx={x} cy={y} r={CIRCLE_RADIUS} color="lightcoral">
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Circle>
                 <Tx

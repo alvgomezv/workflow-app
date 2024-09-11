@@ -1,4 +1,10 @@
-import { Dimensions } from "react-native";
+import {
+  ACTION_WIDTH,
+  ACTION_HEIGHT,
+  CONDITION_WIDTH,
+  CONDITION_HEIGHT,
+  SCREEN_WIDTH,
+} from "../../config/constants";
 
 // Function to calculate the maximum width and height of the coordinates
 const calculateCanvasSize = (
@@ -52,14 +58,7 @@ const recalculateCoordinates = (coordinates, canvasWidth) => {
 };
 
 ///-------------------------------------------------------------------------------------------------------------------------
-const calculateCoordinates = (
-  workflow,
-  actionWidth,
-  conditionWidth,
-  actionHeight,
-  conditionHeight,
-  marginBeetweenShapes = 10
-) => {
+const calculateCoordinates = (workflow) => {
   const levels = {};
   const coordinates = {};
   const adjustedCoordinates = {};
@@ -69,10 +68,6 @@ const calculateCoordinates = (
   const verticalSpacing = 60;
   const horizontalSpacing = 80;
   const topMargin = 80; // Margin from the top of the screen
-
-  // Get the actual screen width
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
 
   // Function to remove "E" nodes from all levels except the last one
   const removeENodesExceptLast = () => {
@@ -124,7 +119,7 @@ const calculateCoordinates = (
     const nodesInLevel = levels[level].length;
     const totalWidth =
       nodesInLevel * (nodeWidth + horizontalSpacing) - horizontalSpacing;
-    const startX = (screenWidth - totalWidth) / 2;
+    const startX = (SCREEN_WIDTH - totalWidth) / 2;
 
     // Check if there is any conditional node in the current level
     const hasConditionalNode = levels[level].some(
@@ -175,11 +170,11 @@ const calculateCoordinates = (
           nodeB
         ); 
         const shapeWidthA = levelNodes[i].startsWith("A")
-          ? actionWidth
-          : conditionWidth;
+          ? ACTION_WIDTH
+          : CONDITION_WIDTH;
         const shapeWidthB = levelNodes[j].startsWith("A")
-          ? actionWidth
-          : conditionWidth;
+          ? ACTION_WIDTH
+          : CONDITION_WIDTH;
         const distance = Math.abs(nodeA.x - nodeB.x);
           console.log(
           "Distance between",
@@ -273,7 +268,7 @@ const calculateCoordinates = (
     const nodesInLevel = levels[level].length;
     const totalWidth =
       nodesInLevel * (nodeWidth + horizontalSpacing) - horizontalSpacing;
-    const startX = (screenWidth - totalWidth) / 2;
+    const startX = (SCREEN_WIDTH - totalWidth) / 2;
 
     levels[level].forEach((nodeId, index) => {
       const parentNode = parents[nodeId];
@@ -321,8 +316,8 @@ const calculateCoordinates = (
   const { canvasWidth, canvasHeight } = calculateCanvasSize(
     coordinates,
     50,
-    actionWidth > conditionWidth ? actionWidth : conditionWidth,
-    actionHeight > conditionHeight ? actionHeight : conditionHeight
+    ACTION_WIDTH > CONDITION_WIDTH ? ACTION_WIDTH : CONDITION_WIDTH,
+    ACTION_HEIGHT > CONDITION_HEIGHT ? ACTION_HEIGHT : CONDITION_HEIGHT
   );
   // Recalculate the coordinates to center them in the canvas, only in the X axis
   adjustedCoordinates.coord = recalculateCoordinates(
@@ -333,7 +328,7 @@ const calculateCoordinates = (
   //add the canvasWidth and canvasHeight to the return object
   adjustedCoordinates.canvasWidth = canvasWidth;
   adjustedCoordinates.canvasHeight = canvasHeight;
-  /*  console.log("Before - Width:", screenWidth, "Height:", screenHeight);
+  /*  console.log("Before - Width:", SCREEN_WIDTH, "Height:", SCREEN_HEIGHT);
   console.log("Adjusted - Width:", canvasWidth, "Height:", canvasHeight);
  */
   return adjustedCoordinates;
