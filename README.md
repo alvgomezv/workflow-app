@@ -31,6 +31,7 @@
 - [x] Make paths directional with an arrow
 - [x] Improve design of shapes
 - [x] Text for shapes
+- [ ] Longer text for shapes
 - [ ] (Extra) More advance function to paint paths starting and ending from specific places of shapes
 
 ### Edit and Delete shapes
@@ -71,7 +72,7 @@
 ### Basic Navigation
 
 - [x] Workflow page
-- [ ] Navigation with tabs for more than one Workflow page
+- [x] Navigation with tabs for more than one Workflow page
 - [ ] Create new Workflow pages in a new tab
 - [ ] Panel to go throw Workflow pages
 - [ ] Create new Workflow page button in the Panel
