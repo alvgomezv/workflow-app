@@ -1,11 +1,5 @@
 import { Gesture } from "react-native-gesture-handler";
 
-// Utility function to check if a point is inside a circle
-const isPointInCircle = (px, py, cx, cy, radius) => {
-  const distance = Math.sqrt((px - cx) ** 2 + (py - cy) ** 2);
-  return distance <= radius;
-};
-
 // Utility function to check if a point is inside a rectangle
 const isPointInRectangle = (px, py, x1, y1, x2, y2) => {
   return px >= x1 && px <= x2 && py >= y1 && py <= y2;
@@ -20,12 +14,6 @@ const isPointInRhombus = (px, py, cx, cy, width, height) => {
 
 // Function to check if the tapped point is inside the shape
 const isPointInShape = (nodeId, px, py, x, y) => {
-  // No need to check for the shape if the node is a start or end node
-  /* if (nodeId.startsWith("I") || nodeId.startsWith("E")) {
-    // Circle
-    const radius = 50; // ------------------------PONER EN GLOBALESSSS!!
-    return isPointInCircle(px, py, x, y, radius); 
-  }*/
   if (nodeId.startsWith("A")) {
     // Rectangle
     const x1 = x - 130 / 2;
@@ -51,9 +39,6 @@ export const useLongTapHandler = (
     .onEnd((event) => {
       let { x, y } = event;
       tapOffset.value = { x, y };
-      //extract the coordinates of the tap and subtract the margins
-      /* x -= margins.marginLeft;
-      y -= margins.marginTop; */
 
       Object.entries(coordinates.coord).forEach(
         ([nodeId, { x: nodeX, y: nodeY }]) => {

@@ -52,7 +52,6 @@ const getNodeHeight = (nodeId) => {
 };
 
 const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
-  // Use effect
   useEffect(() => {
     // Record the lines (paths) between shapes, to paint on the canvas
     const newLines = {};
@@ -71,19 +70,6 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
       });
     });
     setLines(newLines);
-
-    /*  // Center the canvas with the Init node at the center horizontally and margin top from the top
-    const initNode = Object.entries(coordinates.coord).find(
-      ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
-    );
-    const initX = initNode ? initNode[1].x : 0;
-    const initY = initNode ? initNode[1].y : 0;
-
-    const SCREEN_WIDTH = Dimensions.get("window").width;
-    marginLeft = SCREEN_WIDTH / 2 - initX;
-    marginTop = START_MARGIN_TOP - initY;
-
-    setMargins({ marginTop, marginLeft }); */
   }, [workflow]);
 
   return (
@@ -150,8 +136,6 @@ const WorkflowCanvas = ({ workflow, setLines, coordinates }) => {
                 <Circle cx={x} cy={y} r={CIRCLE_RADIUS} color="lightgreen">
                   <Paint color="#black" style="stroke" strokeWidth={2} />
                 </Circle>
-                {/* const x = canvasWidth / 2 - font.measureText(yourText).width / 2; 
-                    const y = canvasWidth / 2 + font.measureText(yourText).height / 2;  */}
                 <Tx
                   text="Init"
                   x={x - font.measureText("Init").width / 2}

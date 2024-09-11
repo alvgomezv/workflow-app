@@ -3,9 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   TextInput,
-  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import { Link } from "expo-router";
@@ -13,8 +11,6 @@ import { deleteWorkflow } from "../utils/stateManagement";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import { STORAGE_KEY } from "../../config/constants";
-import LottieView from "lottie-react-native";
-import FastImage from "react-native-fast-image";
 import { Image } from "expo-image";
 
 const List = () => {
@@ -23,16 +19,16 @@ const List = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Clear all data
-    /* c 
+    /* // Clear all data
+    clearAll = async () => {
+      try {
         await AsyncStorage.clear();
       } catch (e) {
         // clear error
       }
-
       console.log("Done.");
-    };
-    clearAll(); */
+    }; 
+    clearAll();*/
 
     const loadWorkflows = async () => {
       try {
@@ -142,12 +138,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   title: {
-    fontSize: 28, // Increased font size
+    fontSize: 28,
     fontWeight: "bold",
     marginBottom: 50,
   },
   workflowList: {
-    marginBottom: 20, // Gap between the list of workflows and the input text
+    marginBottom: 20,
   },
   workflowContainer: {
     flexDirection: "row",

@@ -3,6 +3,7 @@
     "name": "workflow-app",
     "slug": "workflow-app",
     "scheme": "workflow-app-scheme",
+    "description": "An app to create and manage workflows",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/workflow_icon.png",

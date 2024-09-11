@@ -3,34 +3,15 @@ import {
   StyleSheet,
   View,
   Text,
-  Platform,
-  Button,
   SafeAreaView,
-  Dimensions,
-  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import {
-  PinchGestureHandler,
   GestureHandlerRootView,
-  PanGestureHandler,
-  State,
-  TouchableWithoutFeedback,
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Canvas,
-  Path,
-  Circle,
-  Rect,
-  Text as Tx,
-  listFontFamilies,
-  matchFont,
-  Offset,
-} from "@shopify/react-native-skia";
-import { Use } from "react-native-svg";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -44,20 +25,11 @@ import WorkflowCanvas from "./WorkflowCanvas";
 import CustomModal from "./ModalForm";
 import AddNodeSimpleForm from "./AddNodeSimpeForm";
 import EditTextForm from "./EditTextForm";
-import { Link, useFocusEffect } from "expo-router";
-import {
-  ACTION_WIDTH,
-  ACTION_HEIGHT,
-  CONDITION_WIDTH,
-  CONDITION_HEIGHT,
-  START_MARGIN_TOP,
-  STORAGE_KEY,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT,
-} from "../config/constants";
+import { useFocusEffect } from "expo-router";
+import { START_MARGIN_TOP, SCREEN_WIDTH } from "../config/constants";
 import initializeWorkflow from "../app/utils/utils";
 import { loadWorkflow, saveWorkflow } from "../app/utils/stateManagement";
-import FastImage from "react-native-fast-image";
+
 import { Image } from "expo-image";
 
 const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
@@ -102,10 +74,6 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
   // -------------------------------------
 
   useEffect(() => {
-    /* // Calculate the coordinates of the nodes 
-    setCoordinates(calculateCoordinates(workflow)
-    ); */
-
     // Calculate the margins for the canvas to center it
     const initNode = Object.entries(coordinates.coord).find(
       ([nodeId, { x, y }]) => workflow.adjacencyList[nodeId].type === "Init"
@@ -172,20 +140,6 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
     };
   });
 
-  /*  // Function to calculate boundaries based on scale
-  const calculateBoundaries = (scaleValue) => {
-    const scaledCanvasWidth = coordinates.canvasWidth * scaleValue;
-    const scaledCanvasHeight = coordinates.canvasHeight * scaleValue;
-
-    // Define boundaries (Percentage of the screen)
-    const BOUNDARY_LEFT = (scaledCanvasWidth - SCREEN_WIDTH) * -2;
-    const BOUNDARY_TOP = (scaledCanvasHeight - SCREEN_HEIGHT) * -2;
-    const BOUNDARY_RIGHT = (scaledCanvasWidth - SCREEN_WIDTH) * 2;
-    const BOUNDARY_BOTTOM = (scaledCanvasHeight - SCREEN_HEIGHT) * 3;
-
-    return { BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_RIGHT, BOUNDARY_BOTTOM };
-  };
- */
   // Pan Gesture Handler for moving the canvas
   const panGesture = Gesture.Pan()
     .onStart(() => {
@@ -195,20 +149,7 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
       translateX.value = e.translationX + start.value.x;
       translateY.value = e.translationY + start.value.y;
     })
-    /* .onEnd(() => {
-      const { BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_RIGHT, BOUNDARY_BOTTOM } =
-        calculateBoundaries(scale.value);
 
-      // Ensure within boundaries
-      translateX.value = Math.max(
-        BOUNDARY_LEFT,
-        Math.min(translateX.value, BOUNDARY_RIGHT)
-      );
-      translateY.value = Math.max(
-        BOUNDARY_TOP,
-        Math.min(translateY.value, BOUNDARY_BOTTOM)
-      );
-    }) */
     .runOnJS(true);
 
   // Pinch Gesture Handler for zooming in and out
@@ -339,20 +280,6 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
     setIsLongTapModalVisible(false);
   };
 
-  /* // Print graph whenever it changes
-  useEffect(() => {
-    workflow.printGraph();
-  }, [workflow]);
-
-  // print coordinates whenever they change
-  useEffect(() => {
-    console.log("Coordinates: ", coordinates);
-  }, [coordinates]);
-
-  useEffect(() => {
-    console.log("---------------------- ");
-  }, []); */
-
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -411,20 +338,16 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //delete for drawing on canvas
-
-    /* alignItems: "center",
-    justifyContent: "center", */
   },
   bottomContainer: {
     position: "absolute",
-    bottom: 20, // Adjust the bottom margin as needed
+    bottom: 20,
     left: 0,
     right: 0,
-    alignItems: "center", // Center the content horizontally
+    alignItems: "center",
   },
   addNode: {
-    margin: 10, // Adjust the margin as needed
+    margin: 10,
     textAlign: "center",
     fontWeight: "bold",
   },
@@ -450,7 +373,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     marginTop: 20,
     marginBottom: 5,
     alignItems: "center",

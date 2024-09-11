@@ -1,7 +1,6 @@
 import { Image } from "expo-image";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import FastImage from "react-native-fast-image";
 
 const SplashScreenView = ({ onAnimationEnd }) => {
   useEffect(() => {

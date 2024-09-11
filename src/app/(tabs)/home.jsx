@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import { Link } from "expo-router";
+import React from "react";
+import { View, StyleSheet, Image } from "react-native";
 
 const Home = () => {
   return (
@@ -21,8 +20,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   image: {
-    width: "80%", // Make the image take up the full width of the screen
-    height: "80%", // Make the image take up the full height of the screen
+    width: "80%",
+    height: "80%",
   },
   title: {
     fontSize: 24,

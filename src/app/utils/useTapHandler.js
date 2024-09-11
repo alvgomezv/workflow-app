@@ -40,24 +40,14 @@ export const useTapHandler = (
   const gesture = Gesture.Tap()
     .onEnd((event) => {
       let { x, y } = event;
-      console.log(`Tap: (${x}, ${y})`);
 
       tapOffset.value = { x, y };
-      //extract the coordinates of the tap and subtract the margins
-      /* x -= margins.marginLeft;
-      y -= margins.marginTop; */
 
       Object.entries(lines).forEach(([nodes, { x1, y1, x2, y2 }]) => {
         const [node1, node2] = nodes.split(",");
-        /* if (node1 === "I" && node2 === "C1a") {
-          console.log(
-            `Touch: (${x}, ${y}), Line from ${node1} to ${node2}: (${x1}, ${y1}) to (${x2}, ${y2})`
-          );
-          console.log("--------------------");
-        } */
+
         const distance = distanceToLine(x, y, x1, y1, x2, y2, margins);
         if (distance < threshold) {
-          console.log(`Tapped on line between ${node1} and ${node2}`);
           setSelectedEdge([node1, node2]);
         }
       });

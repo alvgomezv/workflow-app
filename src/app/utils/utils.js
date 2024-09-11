@@ -1,3 +1,4 @@
+import { SCREEN_WIDTH, START_MARGIN_TOP } from "../../config/constants";
 import { WorkflowGraph } from "../utils/WorkflowGraph";
 
 const initializeWorkflow = () => {

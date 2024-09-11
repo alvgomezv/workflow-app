@@ -3,7 +3,7 @@ import {
   useLocalSearchParams,
   useNavigation,
 } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import WorkFlowScreen from "../../../components/WorkFlowScreen";
 import React, { useEffect, useState } from "react";
 

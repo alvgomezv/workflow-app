@@ -1,10 +1,3 @@
-/* class Condition {
-  constructor(condition, neighborId) {
-    this.condition = condition;
-    this.neighborId = neighborId;
-  }
-} */
-
 class WorkflowGraph {
   constructor() {
     this.adjacencyList = {};
@@ -14,7 +7,7 @@ class WorkflowGraph {
   addNode(id, type, name) {
     if (this.adjacencyList[id]) {
       console.error(`Node with ID ${id} already exists.`);
-      return false; // Return false if the node already exists
+      return false;
     }
 
     this.adjacencyList[id] = {
@@ -23,46 +16,21 @@ class WorkflowGraph {
       name,
       neighbors: [],
     };
-    return true; // Return true if the node was successfully added
+    return true;
   }
 
-  // Add a conditional node
-  /* addConditionalNode(id, conditions) {
-    if (this.adjacencyList[id]) {
-      console.error(`Node with ID ${id} already exists.`);
-      return false; // Return false if the node already exists
-    }
-
-    const conditionObjects = Object.entries(conditions).map(
-      ([condition, neighborId]) => new Condition(condition, neighborId)
-    );
-
-    const conditionsMap = {};
-    conditionObjects.forEach((cond) => {
-      conditionsMap[cond.condition] = cond.neighborId;
-    });
-
-    this.adjacencyList[id] = {
-      id,
-      type: "Conditional",
-      neighbors: Object.values(conditionsMap),
-      conditions: conditionsMap,
-    };
-    return true; // Return true if the node was successfully added
-  } */
-
-  // Add an edge from one node to another (for other types of nodes)
+  // Add an edge from one node to another
   addEdge(fromId, toId) {
     const fromNode = this.adjacencyList[fromId];
     const toNode = this.adjacencyList[toId];
 
     if (!fromNode || !toNode) {
       console.error(`Failed to add Edge: FromId: ${fromId}, toId ${toId}`);
-      return false; // Return false if one or both nodes do not exist
+      return false;
     }
 
     fromNode.neighbors.push(toId);
-    return true; // Return true if the edge was successfully added
+    return true;
   }
 
   deleteEdge(fromId, toId) {

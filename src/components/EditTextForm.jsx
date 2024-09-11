@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   TextInput,
-  Button,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   buttonText: {
-    color: "white", // White text color
+    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
