@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Link } from "expo-router";
 import { deleteWorkflow } from "../utils/stateManagement";
@@ -22,8 +23,8 @@ const List = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    /* clearAll = async () => {
-      try {
+    // Clear all data
+    /* c 
         await AsyncStorage.clear();
       } catch (e) {
         // clear error
@@ -32,6 +33,7 @@ const List = () => {
       console.log("Done.");
     };
     clearAll(); */
+
     const loadWorkflows = async () => {
       try {
         const savedWorkflows = await AsyncStorage.getItem(`${STORAGE_KEY}`);
@@ -46,6 +48,7 @@ const List = () => {
     };
 
     loadWorkflows();
+    console.log("workflow length", workflows.length);
   }, []);
 
   const saveWorkflows = async (newWorkflows) => {
@@ -84,7 +87,7 @@ const List = () => {
       <View style={styles.loadingContainer}>
         <Image
           style={{ width: 200, height: 200 }}
-          source={require("../../assets/workflow_loader.gif")}
+          source={require("../../assets/loader.gif")}
           contentFit="contain"
         />
       </View>
@@ -94,26 +97,40 @@ const List = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>List of Workflows</Text>
-      {workflows.map((name) => (
-        <View key={name} style={styles.workflowContainer}>
-          <Link href={`/workflows/${name}`} style={styles.link}>
-            {name}
-          </Link>
-          <Button title="Delete" onPress={() => deleteData(name)} />
+      <View style={styles.workflowList}>
+        {workflows.map((name) => (
+          <View key={name} style={styles.workflowContainer}>
+            <Link href={`/workflows/${name}`} style={styles.link}>
+              {name}
+            </Link>
+            <TouchableOpacity
+              onPress={() => deleteData(name)}
+              style={styles.deleteButton}
+            >
+              <Text style={styles.deleteButtonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter workflow name"
+            value={workflowName}
+            onChangeText={setWorkflowName}
+            maxLength={20}
+          />
+          <TouchableOpacity
+            title="Add Workflow"
+            onPress={addWorkflow}
+            style={[
+              workflows.length >= 9 ? styles.disabledButton : styles.addButton,
+            ]}
+            disabled={workflows.length >= 9}
+          >
+            <Text style={styles.addButtonText}>Add Workflow</Text>
+          </TouchableOpacity>
         </View>
-      ))}
-      <TextInput
-        style={styles.input}
-        placeholder="Enter workflow name"
-        value={workflowName}
-        onChangeText={setWorkflowName}
-        maxLength={20}
-      />
-      <Button
-        title="Add Workflow"
-        onPress={addWorkflow}
-        disabled={workflows.length >= 4}
-      />
+      </View>
     </View>
   );
 };
@@ -121,36 +138,59 @@ const List = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    padding: 50,
+    backgroundColor: "white",
+  },
+  title: {
+    fontSize: 28, // Increased font size
+    fontWeight: "bold",
+    marginBottom: 50,
+  },
+  workflowList: {
+    marginBottom: 20, // Gap between the list of workflows and the input text
+  },
+  workflowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  link: {
+    fontSize: 18,
+    color: "blue",
+  },
+  deleteButton: {
+    backgroundColor: "tomato",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  addButton: {
+    backgroundColor: "tomato",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  addButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  disabledButton: {
+    backgroundColor: "grey",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
     alignItems: "center",
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: "withe",
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    width: "80%",
-  },
-  workflowContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  link: {
-    fontSize: 18,
-    marginRight: 10,
-  },
 });
-
 export default List;

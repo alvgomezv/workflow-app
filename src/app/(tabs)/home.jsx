@@ -5,7 +5,10 @@ import { Link } from "expo-router";
 const Home = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Home Page</Text>
+      <Image
+        style={styles.image}
+        source={require("../../assets/Instructions.jpg")}
+      />
     </View>
   );
 };
@@ -15,6 +18,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
+  },
+  image: {
+    width: "80%", // Make the image take up the full width of the screen
+    height: "80%", // Make the image take up the full height of the screen
   },
   title: {
     fontSize: 24,

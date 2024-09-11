@@ -14,17 +14,27 @@ const TabsLayout = () => {
             iconName = focused ? "settings" : "settings-outline";
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={size} color={"white"} />;
         },
-        tabBarActiveTintColor: "tomato",
-        tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          backgroundColor: "tomato", // Background color of the tab bar
+        },
+        tabBarActiveTintColor: "white", // Color of the active tab
+        tabBarInactiveTintColor: "white", // Color of the inactive tabs
+        headerStyle: {
+          backgroundColor: "tomato", // Background color of the header
+        },
+        headerTintColor: "white", // Color of the header text and icons
+        headerTitleStyle: {
+          fontWeight: "bold", // Font style of the header title
+        },
       })}
     >
       <Tabs.Screen
         name="home"
         options={{
-          headerTitle: "Home",
-          title: "Home",
+          headerTitle: "Instructions",
+          title: "Instructions",
           headerTitleAlign: "center",
         }}
       />

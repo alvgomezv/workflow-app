@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import {
   PinchGestureHandler,
@@ -357,7 +358,7 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
       <View style={styles.loadingContainer}>
         <Image
           style={{ width: 200, height: 200 }}
-          source={require("../assets/workflow_loader.gif")}
+          source={require("../assets/loader.gif")}
           contentFit="contain"
         />
       </View>
@@ -400,8 +401,9 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
           </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
-      {/* <Button title="Add Node" onPress={openModal} /> */}
-      <Button title="Reset View" onPress={resetView} />
+      <TouchableOpacity style={styles.resetButton} onPress={resetView}>
+        <Text style={styles.resetButtonText}>Reset View</Text>
+      </TouchableOpacity>
     </>
   );
 };
@@ -441,6 +443,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+  },
+  resetButton: {
+    borderColor: "tomato",
+    borderWidth: 2,
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 5,
+    alignItems: "center",
+  },
+  resetButtonText: {
+    color: "tomato",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

@@ -9,7 +9,7 @@ const SplashScreenView = ({ onAnimationEnd }) => {
       if (onAnimationEnd) {
         onAnimationEnd();
       }
-    }, 2100); // Duration of the splash screen
+    }, 2000); // Duration of the splash screen
 
     return () => clearTimeout(timer);
   }, [onAnimationEnd]);
