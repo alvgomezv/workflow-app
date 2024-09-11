@@ -1,11 +1,73 @@
 # Workflow App
 
+## Running the App
+
+### Development Environment
+
+1. Clone the repository:
+```sh
+   git clone https://github.com/alvgomezv/workflow-app.git
+```
+2. Navigate to the repository:
+ ```sh
+   cd workflow-app
+ ```
+3. Install dependencies:
+```sh
+   npm install
+ ```
+4. Start the development server:
+```sh
+   npx expo start
+ ```
+  If you want to run this app on your phone, do it like:
+    ```sh
+    npx expo start --tunnel
+     ```
+### Development Environment
+
+1. Build the app::
+```sh
+   npm run build
+```
+2. Serve the built app:
+ ```sh
+  npm run serve
+ ```
+--------------------------
+
+## External Dependencies
+
+- React: Chosen for its component-based architecture and strong community support.
+- React Native: Used for building native mobile applications using React.
+- Expo: Simplifies the development and deployment of React Native applications.
+- Expo Router: Provides a robust navigation solution for React Native apps with expo.
+
+
+## Tools for Continuous Integration and Testing
+
+- Prettier: Code formatter. Ensures consistent code style across the project.
+
+## Architectural Choices
+
+- Component-Based Architecture: React's component-based architecture allows for reusable and maintainable code.
+- State Management: Used React's built-in state management for simplicity. Considered Redux but found it unnecessary for the current app size.
+- Navigation: Used Expo for its flexibility and ease of use with React Native.
+- Expo: Chosen for its ability to streamline the development process and provide a rich set of tools for React Native development.
+
+## Future Considerations
+
+- Scalability: The app is designed to be scalable, with a component-based architecture that allows for easy addition of new features.
+- Intranet Use: The app is intended for use as an intranet app, not exposed to search engines. This influenced the choice of tools and architecture to prioritize security and internal usability.
+
 ## Include a README file covering:
 
 - Steps for running the app in development and production environments.
 - External dependencies used and reasons for their selection.
 - Tools used for continuous integration, testing, build, etc., and reasons for their selection.
 - Small section with descriptions regarding architectural choices and other aspects, including discarded options and reasons for the final choice. Consider future app growth and its use as an intranet app not exposed to search engines.
+
+--------------------------
 
 ## TASK LIST
 
