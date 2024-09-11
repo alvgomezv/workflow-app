@@ -2,7 +2,7 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
-import WarningIcon from "../../assets/warning.png"; // Adjust the path as needed
+import WarningIcon from "../assets/warning.png"; // Adjust the path as needed
 
 const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
   const [nodeType, setNodeType] = useState("Action");

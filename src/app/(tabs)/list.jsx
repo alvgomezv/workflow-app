@@ -12,6 +12,9 @@ import { deleteWorkflow } from "../utils/stateManagement";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import { STORAGE_KEY } from "../../config/constants";
+import LottieView from "lottie-react-native";
+import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 
 const List = () => {
   const [workflows, setWorkflows] = useState([]);
@@ -79,7 +82,11 @@ const List = () => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="black" />
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={require("../../assets/workflow_loader.gif")}
+          contentFit="contain"
+        />
       </View>
     );
   }
@@ -119,6 +126,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
+    backgroundColor: "withe",
     justifyContent: "center",
     alignItems: "center",
   },

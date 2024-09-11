@@ -56,6 +56,8 @@ import {
 } from "../config/constants";
 import initializeWorkflow from "../app/utils/utils";
 import { loadWorkflow, saveWorkflow } from "../app/utils/stateManagement";
+import FastImage from "react-native-fast-image";
+import { Image } from "expo-image";
 
 const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
@@ -353,7 +355,11 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="black" />
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={require("../assets/workflow_loader.gif")}
+          contentFit="contain"
+        />
       </View>
     );
   }
@@ -432,6 +438,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
   },

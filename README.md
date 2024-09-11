@@ -37,7 +37,7 @@
 ### Edit and Delete shapes
 
 - [x] Make the text of the shapes editable
-- [ ] Delete shapes with a form
+- [ ] (Extra) Delete shapes with a form
 - [ ] (Extra) Edit shapes, changing them from action to condition and condition to action
 
 ### Workflow Data Structure
@@ -73,14 +73,15 @@
 
 - [x] Workflow page
 - [x] Navigation with tabs for more than one Workflow page
-- [ ] Create new Workflow pages in a new tab
-- [ ] Panel to go throw Workflow pages
-- [ ] Create new Workflow page button in the Panel
+- [x] Create new Workflow pages in a new tab
+- [x] Panel to go throw Workflow pages
+- [x] Create new Workflow page button in the Panel
+- [x] Delete Workflow button
 
 ### Session Management
 
 - [x] Save workflow when closing the app
-- [ ] Saving all the workflows when closing the app
+- [x] Saving all the workflows when closing the app
 
 ### Animations
 
