@@ -1,8 +1,17 @@
 // AddNodeForm.js
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import WarningIcon from "../assets/warning.png"; // Adjust the path as needed
+import { BlendMode } from "@shopify/react-native-skia";
 
 const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
   const [nodeType, setNodeType] = useState("Action");
@@ -39,7 +48,7 @@ const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
           </Text>
         </View>
       )}
-      <Text>Node Type:</Text>
+      <Text style={styles.text}>Node Type:</Text>
       <Picker
         selectedValue={nodeType}
         style={styles.picker}
@@ -52,34 +61,40 @@ const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
       </Picker>
       {nodeType === "Action" && (
         <>
-          <Text>Action:</Text>
+          <Text style={styles.text}>Node Name:</Text>
           <TextInput
             style={styles.input}
             value={nodeName}
             onChangeText={setNodeName}
-            maxLength={12}
+            maxLength={14}
           />
         </>
       )}
       {nodeType === "Condition" && !isConditionalEdge && (
         <>
-          <Text>Condition 1:</Text>
+          <Text style={styles.text}>Condition 1:</Text>
           <TextInput
             style={styles.input}
             value={condition1}
             onChangeText={setCondition1}
-            maxLength={12}
+            maxLength={14}
           />
-          <Text>Condition 2:</Text>
+          <Text style={styles.text}>Condition 2:</Text>
           <TextInput
             style={styles.input}
             value={condition2}
             onChangeText={setCondition2}
-            maxLength={12}
+            maxLength={14}
           />
         </>
       )}
-      <Button style={styles.button} title="Add Node" onPress={handleSubmit} />
+      <TouchableOpacity
+        style={styles.button}
+        title="Add Node"
+        onPress={handleSubmit}
+      >
+        <Text style={styles.buttonText}>Add Node</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -100,7 +115,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   button: {
-    padding: 20,
+    backgroundColor: "tomato",
+
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
   },
   input: {
     height: 50,
@@ -129,6 +148,16 @@ const styles = StyleSheet.create({
   },
   warningText: {
     color: "#856404",
+  },
+  buttonText: {
+    color: "white", // White text color
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  text: {
+    fontSize: 16,
+
+    marginBottom: 5,
   },
 });
 

@@ -31,7 +31,7 @@
 - [x] Make paths directional with an arrow
 - [x] Improve design of shapes
 - [x] Text for shapes
-- [ ] Longer text for shapes
+- [ ] (Extra) Longer text for shapes
 - [ ] (Extra) More advance function to paint paths starting and ending from specific places of shapes
 
 ### Edit and Delete shapes
@@ -85,6 +85,6 @@
 
 ### Animations
 
-- [ ] Create an instructions panel shown for a few seconds at the start of the app
+- [x] Create an instructions panel shown at home page
 
 ### Automated Tests

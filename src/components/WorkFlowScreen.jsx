@@ -450,6 +450,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginHorizontal: 5,
     marginTop: 20,
     marginBottom: 5,
     alignItems: "center",
