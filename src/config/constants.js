@@ -9,6 +9,6 @@ export const CIRCLE_RADIUS = 50;
 export const ARROW_SIZE = 20;
 export const ARROW_WIDTH = 12;
 export const START_MARGIN_TOP = 100;
-export const STORAGE_KEY = "workflow_data";
+export const STORAGE_KEY = "workflow_data_";
 export const SCREEN_WIDTH = Dimensions.get("window").width;
 export const SCREEN_HEIGHT = Dimensions.get("window").height;
