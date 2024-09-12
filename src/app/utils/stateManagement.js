@@ -18,12 +18,11 @@ const loadWorkflow = async (
       const parsedWorkflow = WorkflowGraph.fromJSON(JSON.parse(savedWorkflow));
       setWorkflow(parsedWorkflow);
 
-      console.log("Loaded workflow data: ", workflowId);
       setCoordinates(calculateCoordinates(parsedWorkflow));
     } else {
       // If there is no saved workflow, initialize a new one
       const initialWorkflow = initializeWorkflow();
-      console.log("Initialized workflow data: ", workflowId);
+
       setWorkflow(initialWorkflow);
       setCoordinates(calculateCoordinates(initialWorkflow));
     }
@@ -41,7 +40,6 @@ const saveWorkflow = async (workflowId, workflow) => {
       `${STORAGE_KEY}${workflowId}`,
       JSON.stringify(workflow)
     );
-    console.log("Saved workflow data: ", workflowId);
   } catch (error) {
     console.error("Failed to save workflow data:", error);
   }
@@ -50,7 +48,6 @@ const saveWorkflow = async (workflowId, workflow) => {
 const deleteWorkflow = async (workflowId) => {
   try {
     await AsyncStorage.removeItem(`${STORAGE_KEY}${workflowId}`);
-    console.log("Deleted workflow data: ", workflowId);
   } catch (error) {
     console.error("Failed to delete workflow data:", error);
   }
