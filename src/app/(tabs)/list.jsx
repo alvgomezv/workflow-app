@@ -44,7 +44,6 @@ const List = () => {
     };
 
     loadWorkflows();
-    console.log("workflow length", workflows.length);
   }, []);
 
   const saveWorkflows = async (newWorkflows) => {
