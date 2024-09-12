@@ -20,52 +20,57 @@
 ```sh
    npx expo start
  ```
-  If you want to run this app on your phone, do it like:
-    ```sh
+5. Now follow the instructions to run the app.
+
+   You can press "a" to run the Android emulator, "i" for the Ios emulator, or scan the QR code with the expo app to run it on your phone.
+  
+   If you are not using an Ios device, you can only use the Android emulator. ``(This app was design to run on Android only, but it can run on Ios devices too)``
+   
+   If you want to run this app on your phone, we recommend using:
+    ``
     npx expo start --tunnel
-     ```
+     ``
 ### Development Environment
 
-1. Build the app::
+1. To build the aplication, follow the Expo Application Sevices (EAS) guide at:
 ```sh
-   npm run build
+   https://docs.expo.dev/eas/
 ```
-2. Serve the built app:
- ```sh
-  npm run serve
- ```
 --------------------------
 
 ## External Dependencies
 
-- React: Chosen for its component-based architecture and strong community support.
-- React Native: Used for building native mobile applications using React.
-- Expo: Simplifies the development and deployment of React Native applications.
-- Expo Router: Provides a robust navigation solution for React Native apps with expo.
+- **React**: Chosen for its component-based architecture and strong community support (Application Requirement).
+- **React Native**: Used for building native mobile applications using React (Application Requirement).
+- **Expo**: Simplifies the development and deployment of React Native applications.
+- **Expo Router**: Provides a robust navigation solution for React Native apps with Expo.
 
 
 ## Tools for Continuous Integration and Testing
 
-- Prettier: Code formatter. Ensures consistent code style across the project.
+- **Git**: Version control system. Used for tracking changes in the source code during software development.
+- **GitHub**: Hosting service for Git repositories. Provides tools for collaboration, code review, and continuous integration.
+- **Prettier**: Code formatter. Ensures consistent code style across the project.
 
 ## Architectural Choices
 
-- Component-Based Architecture: React's component-based architecture allows for reusable and maintainable code.
-- State Management: Used React's built-in state management for simplicity. Considered Redux but found it unnecessary for the current app size.
-- Navigation: Used Expo for its flexibility and ease of use with React Native.
-- Expo: Chosen for its ability to streamline the development process and provide a rich set of tools for React Native development.
+- **Component-Based Architecture**: React's component-based architecture allows for reusable and maintainable code.
+- **Navigation**: Used Expo for its flexibility and ease of use with React Native. Used tabs as an easy way to navigate throught windows. Links were also usefull to access the workflows.
+- **Expo**: Chosen for its ability to streamline the development process and provide a rich set of tools for React Native development.
+- **Adjacency List (Graph) for Node Management**: Utilized an adjacency list to manage nodes and their connections efficiently. This choice allows for scalable and flexible representation of workflows, making it easier to add, remove, and traverse nodes.
 
 ## Future Considerations
 
-- Scalability: The app is designed to be scalable, with a component-based architecture that allows for easy addition of new features.
-- Intranet Use: The app is intended for use as an intranet app, not exposed to search engines. This influenced the choice of tools and architecture to prioritize security and internal usability.
-
-## Include a README file covering:
-
-- Steps for running the app in development and production environments.
-- External dependencies used and reasons for their selection.
-- Tools used for continuous integration, testing, build, etc., and reasons for their selection.
-- Small section with descriptions regarding architectural choices and other aspects, including discarded options and reasons for the final choice. Consider future app growth and its use as an intranet app not exposed to search engines.
+- **Scalability**: The app is designed to be scalable, with a component-based architecture that allows for easy addition of new features.
+- **Landscape Mode**: The app is designed to be used primarily in portrait mode to provide a consistent user experience. 
+- **iOS-Based Specific Design**: The app includes design elements and considerations specific to iOS to ensure a native look and feel on Apple devices.
+- **Longer text for shapes**: Implement support for longer text within shapes.
+- **More advanced function to paint visual workflows**: Enhance the path drawing functionality to allow for more visual pleassing workflows atomatically.
+- **Delete shapes with a form**: Add functionality to delete shapes using a form interface.
+- **Edit and delete shapes**: Provide the ability to edit shapes and change their types.
+- **Algorithm to recognize correct workflows**: Implement an algorithm to validate and recognize correct workflows.
+- **Movable shapes**: Allow shapes to be moved around the canvas for better organization.
+- **Possibility to add edges between other nodes (change the actual node structure)**: Enable the addition of edges between nodes, allowing for more flexible workflow structures.
 
 --------------------------
 
