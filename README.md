@@ -1,5 +1,8 @@
 # Workflow App
 
+<img src="./src/assets/Instructions.jpg" alt="Example Workflow" width="50%" height="50%"/>
+Instructions for the Workflow app
+
 ## Running the App
 
 ### Development Environment
