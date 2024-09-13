@@ -1,3 +1,5 @@
+import { debounce } from "lodash";
+
 class WorkflowGraph {
   constructor() {
     this.adjacencyList = {};
@@ -6,7 +8,6 @@ class WorkflowGraph {
   // Add a general node (Init, Action, Condition, End)
   addNode(id, type, name) {
     if (this.adjacencyList[id]) {
-      console.error(`Node with ID ${id} already exists.`);
       return false;
     }
 
@@ -62,11 +63,11 @@ class WorkflowGraph {
       if (node.type === "End") {
         endNode = node;
       } else {
-        console.log(`${node.id} (${node.type}) -> [${node.neighbors}]`);
+        console.log(`${node.id} (${node.name}) -> [${node.neighbors}]`);
       }
     }
     if (endNode) {
-      console.log(`${endNode.id} (${endNode.type}) -> [${endNode.neighbors}]`);
+      console.log(`${endNode.id} (${endNode.name}) -> [${endNode.neighbors}]`);
     }
     console.log("----");
   }

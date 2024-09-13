@@ -31,6 +31,7 @@ import initializeWorkflow from "../app/utils/utils";
 import { loadWorkflow, saveWorkflow } from "../app/utils/stateManagement";
 
 import { Image } from "expo-image";
+import { debounce } from "lodash";
 
 const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
   const [workflow, setWorkflow] = useState(initializeWorkflow);
@@ -87,7 +88,7 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
     setMargins({ marginTop, marginLeft });
   }, [workflow]);
 
-  // When selected edge changes, open the Add Node modal
+  // When selected edge changes, open the Add Node modal if is not null
   useEffect(() => {
     if (selectedEdge) {
       openTapModal();
@@ -103,11 +104,14 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
   }, [longTapSelectedShape]);
 
   const openTapModal = () => setIsModalVisible(true);
+
   const closeTapModal = () => {
     setIsModalVisible(false);
     setSelectedEdge(null);
   };
+
   const openLongTapModal = () => setIsLongTapModalVisible(true);
+
   const closeLongTapModal = () => {
     setIsLongTapModalVisible(false);
     setLongTapSelectedShape(null);
@@ -212,15 +216,16 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
       .filter((id) => id.startsWith(prefix))
       .map((id) => parseInt(id.slice(1), 10))
       .sort((a, b) => a - b);
-
     const nextNumber = ids.length > 0 ? ids[ids.length - 1] + 1 : 1;
     return `${prefix}${nextNumber}`;
   };
 
   const addAction = (name, fromNode, toNode) => {
     const newId = getNextId("A");
+
     updateWorkflow((wf) => {
       const nodeAdded = wf.addNode(newId, "Action", name);
+
       if (nodeAdded) {
         if (wf.adjacencyList[toNode].type === "Condition") {
           // If toNode is a condition, delete the 2 edges from fromNode to toNode
@@ -243,6 +248,7 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
         }
       }
     });
+
     closeTapModal();
   };
 

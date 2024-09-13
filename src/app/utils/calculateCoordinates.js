@@ -69,15 +69,32 @@ const calculateCoordinates = (workflow) => {
   const horizontalSpacing = 80;
   const topMargin = 80;
 
-  // Function to remove "E" nodes from all levels except the last one
-  const removeENodesExceptLast = () => {
+  // Function to remove repeated nodes from all levels except the last one they are in
+  const removeRepeatedNodesExceptLast = () => {
     const levelKeys = Object.keys(levels).map(Number);
-    const maxLevel = Math.max(...levelKeys);
+    const nodeLevels = {};
 
+    // Track the levels where each node appears
     levelKeys.forEach((level) => {
-      if (level !== maxLevel) {
-        levels[level] = levels[level].filter((nodeId) => nodeId !== "E");
-      }
+      levels[level].forEach((nodeId) => {
+        if (!nodeLevels[nodeId]) {
+          nodeLevels[nodeId] = [];
+        }
+        nodeLevels[nodeId].push(level);
+      });
+    });
+
+    // Find the furthest level down for each node
+    const furthestLevels = {};
+    Object.keys(nodeLevels).forEach((nodeId) => {
+      furthestLevels[nodeId] = Math.max(...nodeLevels[nodeId]);
+    });
+
+    // Remove all repeated nodes from levels except the furthest one
+    levelKeys.forEach((level) => {
+      levels[level] = levels[level].filter((nodeId) => {
+        return furthestLevels[nodeId] === level;
+      });
     });
   };
 
@@ -101,7 +118,7 @@ const calculateCoordinates = (workflow) => {
     });
 
     // Remove "E" nodes from all levels except the last one
-    removeENodesExceptLast();
+    removeRepeatedNodesExceptLast();
   };
 
   // Start from the Init node
