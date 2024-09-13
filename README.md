@@ -3,6 +3,12 @@
 <img src="./src/assets/Instructions.jpg" alt="Example Workflow" width="50%" height="50%"/>
 Instructions for the Workflow app
 
+## Project Description
+
+This project is a comprehensive React Native application designed to facilitate the creation and management of workflows. The primary focus of the application is to implement robust algorithms necessary for managing these workflows efficiently. All business logic is encapsulated within the React Native app, eliminating the need for any server-side application. This self-contained approach ensures that the application is both lightweight and highly responsive.
+
+The application provides a graphical interface where users can visually construct and manipulate workflows, making it intuitive and user-friendly. Each workflow is represented as a graph, composed of various types of nodes that connect to each other in a unidirectional manner. The nodes can have multiple incoming and outgoing connections, depending on their type, allowing for complex and flexible workflow structures.
+
 ## Running the App
 
 ### Development Environment
