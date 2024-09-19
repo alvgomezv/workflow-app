@@ -60,6 +60,7 @@ The application provides a graphical interface where users can visually construc
 - **Git**: Version control system. Used for tracking changes in the source code during software development.
 - **GitHub**: Hosting service for Git repositories. Provides tools for collaboration, code review, and continuous integration.
 - **Prettier**: Code formatter. Ensures consistent code style across the project.
+- **Jest**: Testing framework. It is the most widely used unit and snapshot JavaScript testing framework.
 
 ## Architectural Choices
 
@@ -70,16 +71,17 @@ The application provides a graphical interface where users can visually construc
 
 ## Future Considerations
 
-- **Scalability**: The app is designed to be scalable, with a component-based architecture that allows for easy addition of new features.
 - **Landscape Mode**: The app is designed to be used primarily in portrait mode to provide a consistent user experience. 
-- **iOS-Based Specific Design**: The app includes design elements and considerations specific to iOS to ensure a native look and feel on Apple devices.
-- **Longer text for shapes**: Implement support for longer text within shapes.
+- **iOS-Based Specific Design**: The app includes design elements and considerations specific to Android, expanding to iOS would not take much.
+- **Longer text names for shapes**: Implement support for longer text names within shapes, to make the workflow more usefull.
 - **More advanced function to paint visual workflows**: Enhance the path drawing functionality to allow for more visual pleassing workflows atomatically.
-- **Delete shapes with a form**: Add functionality to delete shapes using a form interface.
-- **Edit and delete shapes**: Provide the ability to edit shapes and change their types.
+- **Edit and delete shapes**: Provide the ability to edit shapes (change their type) and delete it.
 - **Algorithm to recognize correct workflows**: Implement an algorithm to validate and recognize correct workflows.
-- **Movable shapes**: Allow shapes to be moved around the canvas for better organization.
+- **Movable shapes**: Allow shapes to be moved around the canvas for a more flexible and customizable organization of workflows.
 - **Possibility to add edges between other nodes (change the actual node structure)**: Enable the addition of edges between nodes, allowing for more flexible workflow structures.
+- **Implement a backend API with a Database**: Adding backend and Database to save all the workflow data in the server/cloud.
+- **Create account/Login**: Be able to use more than one account in the same device.
+- **More and better testing**: Creating more unit tests for the components and adding E2E testing with Detox.
 
 --------------------------
 
@@ -164,3 +166,5 @@ The application provides a graphical interface where users can visually construc
 - [x] Create an instructions panel shown at home page
 
 ### Automated Tests
+
+- [x] Create a basic unit test for one component
