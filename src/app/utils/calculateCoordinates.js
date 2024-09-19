@@ -117,7 +117,7 @@ const calculateCoordinates = (workflow) => {
       calculateLevel(neighborId, neighborLevel, nodeId);
     });
 
-    // Remove "E" nodes from all levels except the last one
+    // Remove repeated nodes from all levels except the last one they are in
     removeRepeatedNodesExceptLast();
   };
 

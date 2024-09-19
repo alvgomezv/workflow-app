@@ -153,7 +153,6 @@ const WorkFlowScreen = ({ workflowId, setIsLoading, isLoading }) => {
       translateX.value = e.translationX + start.value.x;
       translateY.value = e.translationY + start.value.y;
     })
-
     .runOnJS(true);
 
   // Pinch Gesture Handler for zooming in and out

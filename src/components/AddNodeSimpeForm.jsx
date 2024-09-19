@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import WarningIcon from "../assets/warning.png"; // Adjust the path as needed
+import WarningIcon from "../assets/warning.png";
 
 const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
   const [nodeType, setNodeType] = useState("Action");
@@ -47,6 +47,7 @@ const AddNodeSimpleForm = ({ addAction, addCondition, selectedEdge }) => {
       )}
       <Text style={styles.text}>Node Type:</Text>
       <Picker
+        testID="nodeTypePicker"
         selectedValue={nodeType}
         style={styles.picker}
         onValueChange={(itemValue) => setNodeType(itemValue)}
